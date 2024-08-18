@@ -11,4 +11,13 @@ services:
       - /app/node_modules
     environment:
       - WATCHPACK_POLLING=true
-    command: sh -c "npm run dev"
+    restart: always
+  api:
+    container_name: "back"
+    build:
+      context: ./back/
+    volumes:
+      - ./back:/app
+    ports:
+      - 8000:8000
+    restart: always
