@@ -12,7 +12,6 @@ services:
     environment:
       - WATCHPACK_POLLING=true
     restart: always
-    command: sh -c "npm run dev"
   api:
     container_name: "back"
     build:
