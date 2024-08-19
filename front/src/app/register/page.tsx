@@ -19,7 +19,7 @@ const Register: React.FC = () => {
 
         try {
             await signup(email, password, userName);
-            toast.success("新規登録完了");
+            //toast.success("新規登録完了");
         } catch (error) {
             console.error("An error occurred", error);
             toast.error("An error occurred");
