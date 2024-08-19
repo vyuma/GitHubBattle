@@ -7,6 +7,8 @@ import Link from "next/link";
 
 const Register: React.FC = () => {
     const [username, setUsername] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const router = useRouter();
 
     // const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -20,7 +22,7 @@ const Register: React.FC = () => {
                     "Content-Type": "application/json",
                     // authorization: `Bearer ${localStorage.getItem("token")}`, // トークンを送信する場合。不要か？
                 },
-                body: JSON.stringify({ username }),
+                body: JSON.stringify({ username, email, password }),
             });
 
             if (response.ok) {
@@ -46,6 +48,20 @@ const Register: React.FC = () => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="GitHubのUsername"
+                    required
+                />
+                <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="メールアドレス"
+                    required
+                />
+                <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="パスワード"
                     required
                 />
                 <button type="submit">Register</button>
