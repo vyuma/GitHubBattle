@@ -1,5 +1,6 @@
 "use client";
 import { login } from '@/service/supabase/auth/login';
+import { logout } from '@/service/supabase/auth/logout';
 import { useState, FormEvent } from 'react';
 
 const LoginPage = () => {
@@ -12,21 +13,24 @@ const LoginPage = () => {
     };
 
     return (
-        <form onSubmit={handleSignUp}>
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button type="submit">Sign Up</button>
-        </form>
+        <div>
+            <form onSubmit={handleSignUp}>
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <button type="submit">Sign Up</button>
+            </form>
+            <button onClick={logout}>ログアウトテスト</button>
+        </div>
     );
 }
 
