@@ -46,9 +46,8 @@ const Login: React.FC = () => {
                     required
                 />
                 <button type="submit">Login</button>
-                <button onClick={logout}>ログアウトテスト</button>
             </form>
-
+            <button onClick={logout}>ログアウトテスト</button>
             <Link href="/">ホーム</Link>
         </div>
     );

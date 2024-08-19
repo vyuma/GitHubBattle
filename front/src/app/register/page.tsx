@@ -19,6 +19,7 @@ const Register: React.FC = () => {
 
         try {
             await signup(email, password, userName);
+            toast.success("新規登録完了");
         } catch (error) {
             console.error("An error occurred", error);
             toast.error("An error occurred");
@@ -27,31 +28,31 @@ const Register: React.FC = () => {
 
     return (
         <div>
-            <Toaster />
-            <h1>新規登録</h1>
-            <input
-                type="text"
-                placeholder="名前"
-                value={userName}
-                onChange={(e) => setuserName(e.target.value)}
-                required
-            />
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-            />
-            <button type="submit">Sign Up</button>
-
+            <form onSubmit={handleRegister}>
+                <h1>新規登録</h1>
+                <input
+                    type="text"
+                    placeholder="名前"
+                    value={userName}
+                    onChange={(e) => setuserName(e.target.value)}
+                    required
+                />
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+                <button type="submit">Sign Up</button>
+            </form>
             <Link href="/">ホーム</Link>
         </div>
     );
