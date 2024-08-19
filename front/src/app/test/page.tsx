@@ -1,29 +1,33 @@
-'use client'
+'use client';
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useEffect, useState } from 'react'
-import { Session } from '@supabase/supabase-js'
+import { useState, useEffect } from 'react';
+import { Session } from '@supabase/supabase-js';
+import { getUserSession } from '@/service/supabase/auth/getUserSession';
+import { getUserMetadata } from '@/service/supabase/auth/getUserMetadata';
 
-export default function ClientComponent() {
+export default function Test() {
     const [session, setSession] = useState<Session | null>(null);
-    const supabase = createClientComponentClient();
+    const [userMetadata, setUserMetadata] = useState<any>(null);
 
     useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session);
-        })
+        async function initializeAuth() {
+            const initialSession = await getUserSession();
+            setSession(initialSession);
+            if (initialSession) {
+                const metadata = await getUserMetadata(initialSession);
+                setUserMetadata(metadata);
+            }
+        }
 
-        const {
-            data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session);
-        })
+        initializeAuth();
+    }, []);
 
-        return () => subscription.unsubscribe();
-    }, [])
-
-    if (session) {
-        return <div>ログインしているユーザーメール: {session.user.email}</div>
+    if (session && userMetadata) {
+        return (
+            <div>
+                <div>User Metadata: <pre>{JSON.stringify(userMetadata, null, 2)}</pre></div>
+            </div>
+        );
     } else {
         return <div>ログインしていない</div>
     }
