@@ -1,13 +1,14 @@
 // appディレクトリ内ではuse clientは良くないという記事があったが...
 // https://qiita.com/miumi/items/359b8a77bbb6f9666950
 "use client";
-
+import { login } from '@/service/supabase/auth/login';
+import { logout } from '@/service/supabase/auth/logout';
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from 'next/link';
 
 const Login: React.FC = () => {
-    const [username, setUsername] = useState("");  // 型もつけよう
+    const [userEmail, setUserEmail] = useState("");  // 型もつけよう
     const [password, setPassword] = useState("");  // 型もつけよう
     const router = useRouter();  // 型もつけよう
 
@@ -19,22 +20,8 @@ const Login: React.FC = () => {
         // 例: APIを呼び出してユーザー認証を行う
         try {
             // 仮のログイン処理（実際にはAPIコールなどを行う）
-            const response = await fetch("/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    // authorization: `Bearer ${localStorage.getItem("token")}`, // トークンを送信する場合。これはYugは書いたけど今回は不要かな？
-                },
-                body: JSON.stringify({ username, password }),
-            });
+            await login(userEmail, password);
 
-            if (response.ok) {
-                // ログイン成功時、/rankingページに遷移
-                router.push("/ranking");
-            } else {
-                // エラー処理
-                console.error("Login failed");
-            }
         } catch (error) {
             console.error("An error occurred", error);
         }
@@ -46,9 +33,9 @@ const Login: React.FC = () => {
             <form onSubmit={handleLogin}>
                 <input
                     type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="GitHubのUsername"
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
+                    placeholder="e-mail"
                     required
                 />
                 <input
@@ -60,8 +47,8 @@ const Login: React.FC = () => {
                 />
                 <button type="submit">Login</button>
             </form>
-
-            <Link href="/">ホーム</Link>            
+            <button onClick={logout}>ログアウトテスト</button>
+            <Link href="/">ホーム</Link>
         </div>
     );
 };

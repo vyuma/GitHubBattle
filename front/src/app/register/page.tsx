@@ -4,9 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Toaster, toast } from "react-hot-toast";
 import Link from "next/link";
+import { signup } from '@/service/supabase/auth/signup';
 
 const Register: React.FC = () => {
-    const [username, setUsername] = useState<string>("");
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [userName, setuserName] = useState<string>('');
+
     const router = useRouter();
 
     // const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -14,22 +18,8 @@ const Register: React.FC = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch("/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    // authorization: `Bearer ${localStorage.getItem("token")}`, // トークンを送信する場合。不要か？
-                },
-                body: JSON.stringify({ username }),
-            });
-
-            if (response.ok) {
-                router.push("/ranking"); // 登録成功時、/rankingページに遷移
-                toast.success("Registration successful");
-            } else {
-                console.error("Registration failed");
-                toast.error("Registration failed");
-            }
+            await signup(email, password, userName);
+            toast.success("新規登録完了");
         } catch (error) {
             console.error("An error occurred", error);
             toast.error("An error occurred");
@@ -38,19 +28,31 @@ const Register: React.FC = () => {
 
     return (
         <div>
-            <Toaster />
-            <h1>新規登録</h1>
             <form onSubmit={handleRegister}>
+                <h1>新規登録</h1>
                 <input
                     type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="GitHubのUsername"
+                    placeholder="名前"
+                    value={userName}
+                    onChange={(e) => setuserName(e.target.value)}
                     required
                 />
-                <button type="submit">Register</button>
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
+                <button type="submit">Sign Up</button>
             </form>
-
             <Link href="/">ホーム</Link>
         </div>
     );
