@@ -4,11 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Toaster, toast } from "react-hot-toast";
 import Link from "next/link";
+import { signup } from '@/service/supabase/auth/signup';
 
 const Register: React.FC = () => {
     const [username, setUsername] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+
     const router = useRouter();
 
     // const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -24,6 +26,9 @@ const Register: React.FC = () => {
                 },
                 body: JSON.stringify({ username, email, password }),
             });
+
+            await signup(email, password, username);
+            toast.success("新規登録完了");
 
             if (response.ok) {
                 router.push("/ranking"); // 登録成功時、/rankingページに遷移
@@ -41,13 +46,13 @@ const Register: React.FC = () => {
     return (
         <div>
             <Toaster />
-            <h1>新規登録</h1>
             <form onSubmit={handleRegister}>
+                <h1>新規登録</h1>
                 <input
                     type="text"
+                    placeholder="名前"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="GitHubのUsername"
                     required
                 />
                 <input
@@ -66,7 +71,6 @@ const Register: React.FC = () => {
                 />
                 <button type="submit">Register</button>
             </form>
-
             <Link href="/">ホーム</Link>
         </div>
     );
