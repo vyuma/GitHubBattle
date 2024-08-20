@@ -1,4 +1,4 @@
-import { receiveChatType } from "@/constants/message";
+import { receiveChatType } from "@/constants/receiveChatType";
 import { supabase } from "../supabase";
 
 

@@ -1,7 +1,7 @@
 'use client'
 
 import Message from "@/components/Message"
-import { receiveChatType } from "@/constants/message"
+import { receiveChatType } from "@/constants/receiveChatType"
 import { fetchRealtimeData } from "@/service/supabase/realtime/fetchRealtime"
 import { addMessageDB } from "@/service/supabase/updates/addMessage"
 import { useEffect, useState } from "react"
