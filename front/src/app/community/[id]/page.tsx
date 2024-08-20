@@ -9,18 +9,26 @@ import { useEffect, useState, useRef, useCallback } from "react";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [chatMs, setChatMs] = useState("");
-    const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>([]);
+    const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>(
+        []
+    );
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+
+    const scrollToTop = () => {
+        messagesEndRef.current?.parentElement?.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
     const updateMessages = useCallback((newReceiveChat: receiveChatType) => {
-
-        setReceiveChatData(prevMessages => {
-            if (prevMessages.some(msg => msg.id === newReceiveChat.id)) {
+        setReceiveChatData((prevMessages) => {
+            if (prevMessages.some((msg) => msg.id === newReceiveChat.id)) {
                 console.log(newReceiveChat);
                 return prevMessages;
             }
@@ -37,7 +45,8 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
 
         const fetchInitialMessages = async () => {
             try {
-                const initialMessages: receiveChatType[] = await getCommunityChat(params.id);
+                const initialMessages: receiveChatType[] =
+                    await getCommunityChat(params.id);
                 if (isMounted) {
                     setReceiveChatData(initialMessages);
                 }
@@ -88,12 +97,28 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
             <h1 className="text-2xl font-bold mb-4">
                 コミュニティチャット：{params.id}
             </h1>
+
+            <div
+                className="text-center text-gray-500 my-4 cursor-pointer hover:text-blue-500"
+                onClick={scrollToTop}
+            >
+                ↑古いチャットへ
+            </div>
+
             <div className="h-96 overflow-y-auto mb-4 bg-gray-100 p-4 rounded-lg">
                 {receiveChatData.map((ms, index) => (
                     <Message receiveChat={ms} key={ms.id || index} />
                 ))}
                 <div ref={messagesEndRef} />
             </div>
+
+            <div
+                className="text-center text-gray-500 my-4 cursor-pointer hover:text-blue-500"
+                onClick={scrollToBottom}
+            >
+                ↓新しいチャットへ
+            </div>
+
             <div className="flex">
                 <input
                     type="text"
