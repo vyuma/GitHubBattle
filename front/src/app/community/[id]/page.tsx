@@ -18,9 +18,10 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     };
 
     const updateMessages = useCallback((newReceiveChat: receiveChatType) => {
-        console.log(newReceiveChat);
+
         setReceiveChatData(prevMessages => {
             if (prevMessages.some(msg => msg.id === newReceiveChat.id)) {
+                console.log(newReceiveChat);
                 return prevMessages;
             }
             return [...prevMessages, newReceiveChat];
