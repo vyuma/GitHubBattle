@@ -15,6 +15,6 @@ export const githubLogin = async (): Promise<void> => {
 
     } catch (error) {
         console.error('GitHub login error:', error);
-        throw error; // エラーを呼び出し元に伝播させる
+        throw error;
     }
 }
