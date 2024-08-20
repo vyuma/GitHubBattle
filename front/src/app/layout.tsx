@@ -1,6 +1,8 @@
+// footerとかheaderとかを共通化するためのファイル？
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-// import "./globals.css";  // これ読み込むと変になる
+import "./globals.css";  // 最初は、これ読み込むと変になった
 
 const inter = Inter({ subsets: ["latin"] });
 
