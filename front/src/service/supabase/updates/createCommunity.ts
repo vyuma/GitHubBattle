@@ -1,6 +1,8 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { getUsersCommunity } from '../get/getUsersCommunity';
+import { addUserCommunity } from './addUserCommunity';
 
-export const createCommunity = async (name: string, detail: string, startDate: Date): Promise<void> => {
+export const createCommunity = async (name: string, detail: string, startDate: Date): Promise<boolean> => {
     const supabase = createClientComponentClient();
 
     try {
@@ -8,14 +10,24 @@ export const createCommunity = async (name: string, detail: string, startDate: D
         if (sessionError) throw sessionError;
         if (!session) {
             alert('ユーザーが認証されていません');
-            throw new Error('ユーザーが認証されていません');
+            return false;
         }
         const userId = session.user.id
 
-        //ユーザーがすでにコミュニティに属していなければ以下実行
+        const { UsersCommunityType, error: communityCheckError } = await getUsersCommunity(userId);
+
+        if (communityCheckError) {
+            throw communityCheckError;
+        }
+
+        if (UsersCommunityType.community_id) {
+            alert('ユーザーは既にコミュニティに所属しています');
+            return false;
+
+        }
 
         const { data, error } = await supabase
-            .from('community')
+            .from('communities')
             .insert({
                 name: name,
                 detail: detail,
@@ -29,9 +41,10 @@ export const createCommunity = async (name: string, detail: string, startDate: D
             throw error;
         }
 
-        return;
+        addUserCommunity(data.community_id);
+        return true;
     } catch (error) {
-        console.error('コミュニティ作成エラー:', error)
-        return;
+        console.error('コミュニティ作成エラー:', error);
+        return false;
     }
 }

@@ -19,8 +19,10 @@ const CreateCommunity = () => {
 
 
         try {
-            await createCommunity(communityName, description, new Date(startDate));
-            alert('コミュニティ作成');
+            const isSuccess = await createCommunity(communityName, description, new Date(startDate));
+            if (isSuccess) {
+                alert("コミュニティ作成しました");
+            }
             //router.push("/community");
         } catch (error) {
             alert('予期しないエラー');
