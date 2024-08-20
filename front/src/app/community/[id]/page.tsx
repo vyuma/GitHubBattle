@@ -17,14 +17,14 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    const updateMessages = useCallback((newMessage: receiveChatType) => {
+    const updateMessages = useCallback((newReceiveChat: receiveChatType) => {
+
         setReceiveChatData(prevMessages => {
-            // 重複チェック
-            if (prevMessages.some(msg => msg.id === newMessage.id)) {
+            if (prevMessages.some(msg => msg.id === newReceiveChat.id)) {
+                console.log(newReceiveChat);
                 return prevMessages;
             }
-            // 新しいメッセージを配列の末尾に追加
-            return [...prevMessages, newMessage];
+            return [...prevMessages, newReceiveChat];
         });
     }, []);
 
