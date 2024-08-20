@@ -1,17 +1,20 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
-export const githubLogin = async () => {
+export const githubLogin = async (): Promise<void> => {
     const supabase = createClientComponentClient();
 
-    const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
-        options: {
-            redirectTo: `${window.location.origin}/login`
-        }
-    });
+    try {
+        const { error: signInError } = await supabase.auth.signInWithOAuth({
+            provider: 'github',
+            options: {
+                redirectTo: `${window.location.origin}/login`
+            }
+        });
 
-    if (error) {
+        if (signInError) throw signInError;
+
+    } catch (error) {
         console.error('GitHub login error:', error);
-        throw new Error(error.message);
+        throw error;
     }
 }
