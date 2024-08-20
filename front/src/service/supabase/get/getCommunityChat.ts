@@ -9,14 +9,14 @@ export const getCommunityChat = async (communityId: string): Promise<receiveChat
             .from('community_messages')
             .select('*')
             .eq('community_id', communityId)
-            .order('created_at', { ascending: true })
+            .order('created_at', { ascending: false })
             .limit(20)
 
         if (error) {
             throw error
         }
 
-        return data as receiveChatType[]
+        return (data as receiveChatType[]).reverse()
     } catch (error) {
         console.error('Error fetching initial data:', error)
         return []

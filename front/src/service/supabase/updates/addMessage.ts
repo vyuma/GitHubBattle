@@ -1,13 +1,14 @@
+import { receiveChatType } from '@/constants/receiveChatType';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 
-export const addMessageDB = async (message: string, communityId: string): Promise<void> => {
+export const addMessageDB = async (message: string, communityId: string): Promise<receiveChatType> => {
+    const supabase = createClientComponentClient();
 
     try {
-        const supabase = createClientComponentClient();
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         if (sessionError) {
-            throw sessionError
+            throw sessionError;
         }
         if (!session) {
             throw new Error('ログイン状態ではない');
@@ -21,9 +22,13 @@ export const addMessageDB = async (message: string, communityId: string): Promis
                 nickname: "test",
                 user_id: session.user.id
             })
-            .select();
+            .select()
+            .single();
 
         if (error) throw error;
+        if (!data) throw new Error('メッセージの追加に失敗しました');
+
+        return data as receiveChatType;
     } catch (error) {
         console.error('メッセージ追加エラー:', error);
         throw error;

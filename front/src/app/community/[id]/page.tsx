@@ -5,7 +5,7 @@ import { receiveChatType } from "@/constants/receiveChatType";
 import { getCommunityChat } from "@/service/supabase/get/getCommunityChat";
 import { fetchRealtimeData } from "@/service/supabase/realtime/fetchRealtime";
 import { addMessageDB } from "@/service/supabase/updates/addMessage";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [chatMs, setChatMs] = useState("");
@@ -16,6 +16,17 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
+
+    const updateMessages = useCallback((newMessage: receiveChatType) => {
+        setReceiveChatData(prevMessages => {
+            // 重複チェック
+            if (prevMessages.some(msg => msg.id === newMessage.id)) {
+                return prevMessages;
+            }
+            // 新しいメッセージを配列の末尾に追加
+            return [...prevMessages, newMessage];
+        });
+    }, []);
 
     useEffect(() => {
         let isMounted = true;
@@ -52,8 +63,15 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
 
     const handleSendMessage = async () => {
         if (chatMs.trim()) {
-            await addMessageDB(chatMs, params.id);
-            setChatMs("");
+            try {
+                const newReceiveChat = await addMessageDB(chatMs, params.id);
+                if (newReceiveChat) {
+                    updateMessages(newReceiveChat);
+                }
+                setChatMs("");
+            } catch (error) {
+                console.error("Error sending message:", error);
+            }
         }
         inputRef.current?.focus();
     };
