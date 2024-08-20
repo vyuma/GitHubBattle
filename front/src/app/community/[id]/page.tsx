@@ -9,9 +9,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [chatMs, setChatMs] = useState("");
-    const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>(
-        []
-    );
+    const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>([]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -45,8 +43,7 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
 
         const fetchInitialMessages = async () => {
             try {
-                const initialMessages: receiveChatType[] =
-                    await getCommunityChat(params.id);
+                const initialMessages: receiveChatType[] = await getCommunityChat(params.id);
                 if (isMounted) {
                     setReceiveChatData(initialMessages);
                 }
