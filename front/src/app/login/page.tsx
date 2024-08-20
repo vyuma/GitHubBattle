@@ -1,57 +1,55 @@
-// appディレクトリ内ではuse clientは良くないという記事があったが...
-// https://qiita.com/miumi/items/359b8a77bbb6f9666950
+'use client';
 
-"use client";
-
-import { login } from '@/service/supabase/auth/login';
+import { useEffect, useState } from 'react'
+import { githubLogin } from '@/service/supabase/auth/githubLogin';
 import { logout } from '@/service/supabase/auth/logout';
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { addUser } from '@/service/supabase/updates/addUser';
 
-const Login: React.FC = () => {
-    const [userEmail, setUserEmail] = useState<string>("")
-    const [password, setPassword] = useState<string>("");
+const LoginPage = () => {
+    const [xName, setXName] = useState<string>('');
     const router = useRouter();
+    const supabase = createClientComponentClient();
 
-    // const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    const handleLogin = async (e: React.FormEvent): Promise<void> => {
-        e.preventDefault();
+    useEffect(() => {
+        const checkSession = async () => {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (session && !error) {
+                const storedXName = localStorage.getItem('xName');
+                const isSuccess = await addUser(session.user, storedXName);
+                if (isSuccess) {
+                    localStorage.removeItem('xName');
+                    router.push('/test');
+                } else {
+                    console.error('Failed to add user');
+                }
+            }
+        };
 
-        try {
-            await login(userEmail, password);
-        } catch (error) {
-            console.error("An error occurred", error);
-        }
-    };
+        checkSession();
+    }, []);
+
+    const handleGithubLogin = async () => {
+        localStorage.setItem('xName', xName);
+        await githubLogin();
+    }
 
     return (
         <div>
-            <h1>ログイン</h1>
-
-            <form onSubmit={handleLogin}>
-                <input
-                    type="text"
-                    value={userEmail}
-                    onChange={(e) => setUserEmail(e.target.value)}
-                    placeholder="e-mail"
-                    required
-                />
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Password"
-                    required
-                />
-                <button type="submit">Login</button>
-            </form>
-
-            <button onClick={logout}>ログアウトテスト</button>
-
-            <Link href="/">ホーム</Link>
+            <h1>ログインページ</h1>
+            <input
+                type="text"
+                value={xName}
+                onChange={(e) => setXName(e.target.value)}
+                placeholder="Xユーザー名（任意）"
+            />
+            <button onClick={handleGithubLogin} >
+                GitHubでログイン
+            </button>
+            <button onClick={logout} >ログアウトテスト</button>
         </div>
-    );
-};
+    )
+}
 
-export default Login;
+export default LoginPage;
