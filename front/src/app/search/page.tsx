@@ -53,7 +53,6 @@ const Search: React.FC = () => {
             </div>
 
             <Link href="/">ホーム</Link>
-
         </div>
     );
 };

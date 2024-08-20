@@ -1,5 +1,4 @@
 // そもそもこのページにたどり着くために、どうやってidを動的に取得するのかはわからない
-// このページはcommunity.descriptionを表示すれば良いか
 
 import Link from 'next/link';
 
@@ -10,7 +9,8 @@ const CommunityDetail: React.FC = () => {
 
             <p>コミュニティ名</p>
             <p>コミュニティ詳細</p>
-            <p>tagなど?</p>
+            <p>tagなど</p>
+            <p>tagなど</p>
 
             <Link href="/">ホーム</Link>
         </div>

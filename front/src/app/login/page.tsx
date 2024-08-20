@@ -43,7 +43,6 @@ const LoginPage = () => {
                 value={xName}
                 onChange={(e) => setXName(e.target.value)}
                 placeholder="Xユーザー名（任意）"
-
             />
             <button onClick={handleGithubLogin} >
                 GitHubでログイン
