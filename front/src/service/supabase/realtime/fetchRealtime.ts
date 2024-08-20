@@ -14,7 +14,12 @@ export const fetchRealtimeData = (
             { event: 'INSERT', schema: 'public', table: 'community_messages', filter: `community_id=eq.${communityId}` },
             payload => {
                 console.log(payload.new);
-                setReceiveChatData(prevMessages => [...prevMessages, payload.new as receiveChatType]);
+                setReceiveChatData(prevMessages => {
+                    if (prevMessages.some(msg => msg.id === payload.new.id)) {
+                        return prevMessages;
+                    }
+                    return [...prevMessages, payload.new as receiveChatType];
+                });
             }
         )
         .subscribe();
