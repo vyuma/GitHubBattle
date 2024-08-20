@@ -5,4 +5,5 @@ export interface CommunityType {
     detail: string | null;
     start_date: Date;
     created_at: string;
+    member_limits: number;
 }
