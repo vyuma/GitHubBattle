@@ -1,6 +1,6 @@
 import { UsersCommunityType } from "@/constants/usersCommunityType"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-export const getUsersCommunity = async (userId: string): Promise<{ UsersCommunityType: UsersCommunityType; error: Error | null }> => {
+export const getUsersCommunity = async (userId: string, nickname: string): Promise<{ UsersCommunityType: UsersCommunityType }> => {
     const supabase = createClientComponentClient()
 
     try {
@@ -8,18 +8,18 @@ export const getUsersCommunity = async (userId: string): Promise<{ UsersCommunit
             .from('users_community')
             .select('*')
             .eq('user_id', userId)
-            .single()
+            .maybeSingle()
 
         if (error) {
-            if (error.code === 'PGRST116') { // ユーザーがどのコミュニティにも所属していない場合
+            if (error.code === 'PGRST116') {
                 return {
                     UsersCommunityType: {
                         user_id: null,
                         community_id: null,
                         joined_at: null,
-                        created_at: null
-                    },
-                    error: null
+                        created_at: null,
+                        nickname: null
+                    }
                 }
             }
             throw error
@@ -30,16 +30,16 @@ export const getUsersCommunity = async (userId: string): Promise<{ UsersCommunit
                     user_id: null,
                     community_id: null,
                     joined_at: null,
-                    created_at: null
-                },
-                error: null
+                    created_at: null,
+                    nickname: null
+                }
             }
         }
 
         // ユーザーが所属するコミュニティが見つかった場合
         return {
             UsersCommunityType: data as UsersCommunityType,
-            error: null
+
         }
     } catch (error) {
         console.error('予期しないエラー:', error)
@@ -48,9 +48,9 @@ export const getUsersCommunity = async (userId: string): Promise<{ UsersCommunit
                 user_id: null,
                 community_id: null,
                 joined_at: null,
-                created_at: null
-            },
-            error: error as Error
+                created_at: null,
+                nickname: null
+            }
         }
     }
 }

@@ -10,6 +10,8 @@ const CreateCommunity = () => {
     const [communityName, setCommunityName] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [startDate, setStartDate] = useState<string>("");
+    const [memberLimits, setMemberLimits] = useState<number>(5);
+    const [nickname, setNickname] = useState<string>("");
 
     const router = useRouter();
 
@@ -19,7 +21,7 @@ const CreateCommunity = () => {
 
 
         try {
-            const isSuccess = await createCommunity(communityName, description, new Date(startDate));
+            const isSuccess = await createCommunity(communityName, description, new Date(startDate), memberLimits, nickname);
             if (isSuccess) {
                 alert("コミュニティ作成しました");
             }
@@ -55,6 +57,24 @@ const CreateCommunity = () => {
                     onChange={(e) => setDescription(e.target.value)}
                     required
                 ></textarea>
+                <br />
+                <input
+                    id="memberLimits"
+                    type="text"
+                    placeholder="個人が特定されないニックネーム"
+                    value={nickname}
+                    onChange={(e) => setNickname(e.target.value)}
+                    required
+                />
+                <br />
+                <input
+                    id="memberLimits"
+                    type="number"
+                    placeholder="メンバー上限人数"
+                    value={memberLimits}
+                    onChange={(e) => setMemberLimits(Number(e.target.value))}
+                    required
+                />
 
 
                 <div>

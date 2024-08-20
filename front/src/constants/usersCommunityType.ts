@@ -3,4 +3,5 @@ export interface UsersCommunityType {
     community_id: string | null;
     joined_at: Date | null
     created_at: string | null;
+    nickname: string | null;
 }

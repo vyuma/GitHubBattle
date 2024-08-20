@@ -1,6 +1,6 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
-export const addUserCommunity = async (community_id: string): Promise<boolean> => {
+export const addUserCommunity = async (community_id: string, nickname: string): Promise<boolean> => {
     const supabase = createClientComponentClient();
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
     if (sessionError) {
@@ -20,7 +20,8 @@ export const addUserCommunity = async (community_id: string): Promise<boolean> =
                     year: 'numeric',
                     month: '2-digit',
                     day: '2-digit'
-                })
+                }),
+                nickname: nickname
             });
 
         if (error) {
