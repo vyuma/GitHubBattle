@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Session } from '@supabase/supabase-js';
 import { getUserSession } from '@/service/supabase/auth/getUserSession';
+import { getCommunity } from '@/service/supabase/get/getCommunity';
 
 export default function Test() {
     const [session, setSession] = useState<Session | null>(null);
@@ -11,7 +12,10 @@ export default function Test() {
         async function initializeAuth() {
             const initialSession = await getUserSession();
             setSession(initialSession);
+            const community = await getCommunity(0);
+            console.log(community);
         }
+
 
         initializeAuth();
     }, []);
