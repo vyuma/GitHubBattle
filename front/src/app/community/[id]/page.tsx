@@ -8,7 +8,7 @@ import { addMessageDB } from "@/service/supabase/updates/addMessage";
 import { useEffect, useState, useRef, useCallback } from "react";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
-    const [chatMs, setChatMs] = useState("");
+    const [chatMs, setChatMs] = useState<string>("");
     const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>([]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
