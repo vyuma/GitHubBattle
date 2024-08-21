@@ -1,8 +1,24 @@
 import { receiveChatType } from "@/constants/receiveChatType"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { getUsersCommunityRegistration } from "./getUsersCommunityRegistration";
 
 export const getCommunityChat = async (communityId: string): Promise<receiveChatType[]> => {
-    const supabase = createClientComponentClient()
+    const supabase = createClientComponentClient();
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+        return [];
+    }
+    if (!session) {
+        return [];
+    }
+
+    const { UsersCommunityType } = await getUsersCommunityRegistration(session.user.id);
+
+
+    if (UsersCommunityType.community_id !== communityId) {
+        alert('このコミュニティには所属していません');
+        return [];
+    }
 
     try {
         const { data, error } = await supabase
@@ -19,6 +35,6 @@ export const getCommunityChat = async (communityId: string): Promise<receiveChat
         return (data as receiveChatType[]).reverse()
     } catch (error) {
         console.error('Error fetching initial data:', error)
-        return []
+        return [];
     }
 }

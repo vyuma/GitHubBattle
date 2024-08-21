@@ -4,7 +4,7 @@ import Message from "@/components/Message";
 import { receiveChatType } from "@/constants/receiveChatType";
 import { getCommunityChat } from "@/service/supabase/get/getCommunityChat";
 import { fetchRealtimeData } from "@/service/supabase/realtime/fetchRealtime";
-import { addMessageDB } from "@/service/supabase/updates/addMessage";
+import { addMessageDB } from "@/service/supabase/updates/addCommunityMessage";
 import { useEffect, useState, useRef, useCallback } from "react";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
