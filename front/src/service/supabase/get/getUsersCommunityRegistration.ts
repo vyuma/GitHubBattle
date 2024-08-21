@@ -1,6 +1,6 @@
 import { UsersCommunityType } from "@/constants/usersCommunityType"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
-export const getUsersCommunity = async (userId: string, nickname: string): Promise<{ UsersCommunityType: UsersCommunityType }> => {
+export const getUsersCommunityRegistration = async (userId: string): Promise<{ UsersCommunityType: UsersCommunityType }> => {
     const supabase = createClientComponentClient()
 
     try {
