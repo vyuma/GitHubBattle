@@ -10,6 +10,7 @@ export const addUserCommunity = async (community_id: string, nickname: string): 
         return false;
     }
     try {
+
         const { error } = await supabase
             .from('users_community')
             .upsert({

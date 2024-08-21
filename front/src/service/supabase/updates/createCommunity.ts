@@ -1,5 +1,5 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { getUsersCommunity } from '../get/getUsersCommunity';
+import { getUsersCommunityRegistration } from '../get/getUsersCommunityRegistration';
 import { addUserCommunity } from './addUserCommunity';
 
 export const createCommunity = async (name: string, detail: string, startDate: Date, memberLimits: number, nickname: string): Promise<boolean> => {
@@ -14,7 +14,7 @@ export const createCommunity = async (name: string, detail: string, startDate: D
         }
         const userId = session.user.id
 
-        const { UsersCommunityType } = await getUsersCommunity(userId, nickname);
+        const { UsersCommunityType } = await getUsersCommunityRegistration(userId);
 
 
         if (UsersCommunityType.community_id) {
