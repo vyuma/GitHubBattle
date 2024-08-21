@@ -15,10 +15,8 @@ const CreateCommunity = () => {
 
     const router = useRouter();
 
-
     const handleCreate = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
-
 
         try {
             const isSuccess = await createCommunity(communityName, description, new Date(startDate), memberLimits, nickname);
@@ -46,8 +44,7 @@ const CreateCommunity = () => {
                     onChange={(e) => setCommunityName(e.target.value)}
                     required
                 />
-                <br />
-                <br />
+                <br /><br />
 
                 <textarea
                     id="description"
@@ -75,7 +72,6 @@ const CreateCommunity = () => {
                     onChange={(e) => setMemberLimits(Number(e.target.value))}
                     required
                 />
-
 
                 <div>
                     <label htmlFor="startDate">開始日</label>

@@ -25,7 +25,7 @@ const CommunitiesPage: React.FC = () => {
             // コミュニティ一覧取得
             const community = await getCommunity(0);
             setDisplay(community);
-            console.log("あいうえお", community);
+            console.log("communityは、->", community);
         };
 
         initializeAuth();
