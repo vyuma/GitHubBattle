@@ -22,13 +22,12 @@ export default function Test() {
             const community = await getCommunity(0);
             console.log(community);
             //入りたいコミュニティのメンバー取得
-            const communituMember = await getCommunityMembers(community[0].community_id);
+            const communityMember = await getCommunityMembers(community[0].community_id);
             //メンバー上限に達していなければ参加
-            if (communituMember.length < community[0].member_limits) {
+            if (communityMember.length < community[0].member_limits) {
                 addUserCommunity(community[0].community_id, "hello"); //引数　入るコミュニティID,　個人が特定されないニックネーム
             }
-            console.log(communituMember);
-            //
+            console.log(communityMember);
         }
 
 
