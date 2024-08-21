@@ -1,3 +1,5 @@
+// 左：ランキングtop10 / 中央：自分のコミット情報 / 右：コミュニティの検索・作成
+
 "use client";
 
 import Link from "next/link";
