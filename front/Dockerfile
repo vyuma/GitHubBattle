@@ -10,5 +10,5 @@ RUN \
     else echo "Lockfile not found." && exit 1; \
     fi
 
-RUN npm install
+RUN npm i graphql @octokit/core dayjs
 CMD ["npm", "run", "dev"]
