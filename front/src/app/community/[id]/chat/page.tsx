@@ -2,14 +2,21 @@
 
 import Message from "@/components/Message";
 import { receiveChatType } from "@/constants/receiveChatType";
+import { getCommunity } from "@/service/supabase/get/getCommunity";
 import { getCommunityChat } from "@/service/supabase/get/getCommunityChat";
+import { CommunityType } from "@/constants/communityType";
 import { fetchRealtimeData } from "@/service/supabase/realtime/fetchRealtime";
 import { addMessageDB } from "@/service/supabase/updates/addCommunityMessage";
 import { useEffect, useState, useRef, useCallback } from "react";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [chatMs, setChatMs] = useState<string>("");
-    const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>([]);
+    const [displayCommunities, setDisplayCommunities] = useState<
+        CommunityType[]
+    >([]);
+    const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>(
+        []
+    );
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -43,7 +50,8 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
 
         const fetchInitialMessages = async () => {
             try {
-                const initialMessages: receiveChatType[] = await getCommunityChat(params.id);
+                const initialMessages: receiveChatType[] =
+                    await getCommunityChat(params.id);
                 if (isMounted) {
                     setReceiveChatData(initialMessages);
                 }
@@ -65,7 +73,21 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
 
     useEffect(() => {
         inputRef.current?.focus();
+
+        const initializeAuth = async () => {
+            // コミュニティ一覧(最新20件)
+            const communities = await getCommunity(0);
+            setDisplayCommunities(communities);
+        };
+        initializeAuth();
     }, []);
+
+    const communityName = displayCommunities.find(
+        (community) => community.community_id === params.id
+    )?.name;
+    const communityDetail = displayCommunities.find(
+        (community) => community.community_id === params.id
+    )?.detail;
 
     const handleSendMessage = async () => {
         if (chatMs.trim()) {
@@ -91,9 +113,15 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
 
     return (
         <div className="max-w-2xl mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">
-                コミュニティチャット：{params.id}
+            <h1 className="text-center text-2xl md:text-3xl font-extrabold mb-8 mt-4 text-gray-800 tracking-tight leading-tight">
+                『{communityName}』
             </h1>
+
+            {communityDetail && (
+                <p className="text-center text-sm md:text-base text-gray-600 mb-8 px-4 leading-relaxed">
+                    {communityDetail}
+                </p>
+            )}
 
             <div
                 className="text-center text-gray-500 my-4 cursor-pointer hover:text-blue-500"
