@@ -4,23 +4,27 @@ import dayjs from "dayjs";
 
 // レスポンスの型
 export type Contributions = {
-    user: {
-      contributionsCollection: {
-        contributionCalendar: {
-          weeks: [
-            {
-              contributionDays: [
-                {
-                  date: string;
-                  contributionCount: number;
+    data:{
+        user:{
+            ContoributionsCollection:{
+                totalCommitContributions:number,
+                contributionCalendar:{
+                    weeks:{
+                        contributionDays:{
+                            weeks:[
+                                {
+                                    date:string,
+                                    contributionLevel:number,
+                                    contributionCount:number
+                                }
+                            ]
+                        }
+                    }
                 }
-              ];
-            }
-          ];
-        };
-      };
-    };
-  };
+        }
+    }
+  }
+};
   
 
   
