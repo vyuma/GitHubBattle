@@ -3,15 +3,22 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { getCommunity } from "@/service/supabase/get/getCommunity";
+import { getUserSession } from '@/service/supabase/auth/getUserSession';
+import { CommunityType } from "@/constants/communityType";
+import { getUsersCommunityRegistration } from "@/service/supabase/get/getUsersCommunityRegistration";
 
 const Ranking: React.FC = () => {
     const [view, setView] = useState<"user" | "community">("user");
+    const initializationDone = useRef(false);
+    const [displayCommunities, setDisplayCommunities] = useState<CommunityType[]>([]);
+    const [displayCurrentCommunityId, setDisplayCurrentCommunityId] = useState<string | null>(null);
 
     const users = [
         { name: "ユーザー1", commits: 10 },
         { name: "ユーザー2", commits: 32 },
-        { name: "ユーザー3", commits: 12 },
+        { name: "ユーザー3", commits: 10 },
         { name: "ユーザー4", commits: 32 },
         { name: "ユーザー5", commits: 12 },
         { name: "ユーザー6", commits: 42 },
@@ -25,22 +32,46 @@ const Ranking: React.FC = () => {
     ];
 
     const communities = [
-        { name: "コミュニティ1", commits: 15 },
-        { name: "コミュニティ2", commits: 12 },
-        { name: "コミュニティ3", commits: 10 },
-        { name: "コミュニティ4", commits: 8 },
-        { name: "コミュニティ5", commits: 6 },
-        { name: "コミュニティ6", commits: 21 },
-        { name: "コミュニティ7", commits: 32 },
-        { name: "コミュニティ8", commits: 12 },
-        { name: "コミュニティ9", commits: 43 },
-        { name: "コミュニティ10", commits: 1 },
-        { name: "コミュニティ11", commits: 43 },
-        { name: "コミュニティ12", commits: 33 },
+        { name: "Python初心者カフェ", commits: 15 },
+        { name: "Next.js勉強コミュニティ", commits: 12 },
+        { name: "Flutterに興味ある人集まれ", commits: 10 },
+        { name: "Webデザイン初心者会", commits: 8 },
+        { name: "駆け出しコミュニティ", commits: 11 },
+        { name: "ゲーム開発の秘密基地", commits: 21 },
+        { name: "データサイエンスの一歩", commits: 32 },
+        { name: "React同好会", commits: 10 },
+        { name: "アルゴリズム大好きの会", commits: 43 },
+        { name: "デスクトップアプリ開発", commits: 1 },
+        { name: "Kotlin好き", commits: 43 },
+        { name: "Kotlinより普通にSwiftが好き～", commits: 33 },
     ];
 
+    useEffect(() => {
+        // デバックモードだと２回呼ばれる対策
+        if (initializationDone.current) return;
+        initializationDone.current = true;
+
+        const initializeAuth = async () => {
+            // コミュニティ一覧
+            const communities = await getCommunity(0);
+            setDisplayCommunities(communities);
+
+            // 現在のユーザーが属するコミュニティのID
+            const initialSession = await getUserSession();
+            if (initialSession && initialSession.user) {
+                const usersRegistration = await getUsersCommunityRegistration(initialSession.user.id);
+                const usersCommunityId = usersRegistration.UsersCommunityType.community_id;
+                setDisplayCurrentCommunityId(usersCommunityId);
+            }
+        };
+
+        initializeAuth();
+    }, []);
+
     const currentUser = "あなた";
-    const currentCommunity = "コミュニティ6";
+    const currentCommunity = displayCommunities.find(
+        (community) => community.community_id === displayCurrentCommunityId
+    )?.name;
 
     const calculateRankings = (items: { name: string; commits: number }[]) => {
         let rankings: { name: string; commits: number; rank: number }[] = [];
@@ -137,7 +168,7 @@ const Ranking: React.FC = () => {
                     所属コミュニティ: {currentCommunity}
                 </h2>
                 <Link
-                    href="/このユーザーが属するコミュニティのチャット画面へのリンク"
+                    href={`community/${displayCurrentCommunityId}/chat`}
                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
                 >
                     コミュニティのチャット画面へ
@@ -147,13 +178,13 @@ const Ranking: React.FC = () => {
             {/* 右側: 操作ボタン */}
             <div className="w-1/3 p-4 border-l border-gray-300 flex flex-col space-y-4">
                 <Link
-                    href="/create"
+                    href="/community-create"
                     className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
                 >
                     コミュニティを作成
                 </Link>
                 <Link
-                    href="/search"
+                    href="/communities"
                     className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700"
                 >
                     コミュニティを探す
