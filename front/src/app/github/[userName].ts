@@ -22,10 +22,7 @@ export type Contributions = {
     };
   };
   
-  // 最終的に描画時に利用するデータの型
-  export type MyContributes = {
-    values: number[];
-  };
+
   
   // メインとなる関数
   export default async function handler(
