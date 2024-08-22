@@ -9,9 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@octokit/core": "^6.1.2",
+    "@octokit/request-error": "^6.1.4",
+    "@octokit/rest": "^21.0.2",
+    "@octokit/types": "^13.5.0",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.45.1",
     "next": "14.2.5",
+    "octokit": "^4.0.2",
     "react": "^18",
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1"
