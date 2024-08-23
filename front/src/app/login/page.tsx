@@ -23,7 +23,7 @@ const LoginPage: React.FC = () => {
                 const isSuccess = await addUser(session.user, storedXName);
                 if (isSuccess) {
                     localStorage.removeItem("xName");
-                    router.push("/test");
+                    router.push("/home");
                 } else {
                     console.error("Failed to add user");
                 }
