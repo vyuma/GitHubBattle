@@ -1,19 +1,26 @@
-// 左：ランキングtop10 / 中央：自分のコミット情報 / 右：コミュニティの検索・作成
+/*
+左  :ランキングtop10
+中央:自分のコミット情報
+右  :コミュニティの検索・作成
+*/
 
 "use client";
 
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { getCommunity } from "@/service/supabase/get/getCommunity";
-import { getUserSession } from '@/service/supabase/auth/getUserSession';
+import { getCommunityMembers } from "@/service/supabase/get/getCommunityMembers";
+import { getUserSession } from "@/service/supabase/auth/getUserSession";
 import { CommunityType } from "@/constants/communityType";
+import { UsersCommunityType } from "@/constants/usersCommunityType";
 import { getUsersCommunityRegistration } from "@/service/supabase/get/getUsersCommunityRegistration";
 
 const Ranking: React.FC = () => {
     const [view, setView] = useState<"user" | "community">("user");
     const initializationDone = useRef(false);
     const [displayCommunities, setDisplayCommunities] = useState<CommunityType[]>([]);
-    const [displayCurrentCommunityId, setDisplayCurrentCommunityId] = useState<string | null>(null);
+    const [displayCurrentCommunityId, setDisplayCurrentCommunityId] = useState<string>("");
+    const [community_members, setCommunityMembers] = useState<UsersCommunityType[]>([]);
 
     const users = [
         { name: "ユーザー1", commits: 10 },
@@ -59,9 +66,17 @@ const Ranking: React.FC = () => {
             // 現在のユーザーが属するコミュニティのID
             const initialSession = await getUserSession();
             if (initialSession && initialSession.user) {
-                const usersRegistration = await getUsersCommunityRegistration(initialSession.user.id);
+                const usersRegistration = await getUsersCommunityRegistration(
+                    initialSession.user.id
+                );
                 const usersCommunityId = usersRegistration.UsersCommunityType.community_id;
-                setDisplayCurrentCommunityId(usersCommunityId);
+                setDisplayCurrentCommunityId(usersCommunityId || "");
+
+                // 現在のユーザーが属するコミュニティのメンバー
+                const communityMembers = await getCommunityMembers(
+                    usersCommunityId || ""
+                );
+                setCommunityMembers(communityMembers);
             }
         };
 
@@ -164,9 +179,31 @@ const Ranking: React.FC = () => {
                     あなたのコミット数:{" "}
                     {users.find((user) => user.name === currentUser)?.commits}
                 </h2>
+
                 <h2 className="text-xl mb-4">
                     所属コミュニティ: {currentCommunity}
                 </h2>
+
+                <div className="mb-6 bg-gray-50 p-4 rounded-md">
+                    {community_members.length === 0 && (
+                        <p className="text-gray-600">メンバーはいません</p>
+                    )}
+
+                    {community_members.length !== 0 && (
+                        <h2 className="text-xl font-semibold text-gray-800 mb-3">
+                            メンバー
+                        </h2>
+                    )}
+
+                    <ul className="list-disc list-inside space-y-1">
+                        {community_members.map((member) => (
+                            <li key={member.user_id} className="text-gray-600">
+                                {member.nickname} さん
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
                 <Link
                     href={`community/${displayCurrentCommunityId}/chat`}
                     className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
