@@ -6,6 +6,6 @@ export const logout = async () => {
         throw new Error(error.message);
     }
     else {
-        alert("ログアウト");
+        alert("ログアウト完了");
     }
 }
