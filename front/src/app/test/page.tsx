@@ -25,7 +25,7 @@ export default function Test() {
             const communityMember = await getCommunityMembers(community[0].community_id);
             //メンバー上限に達していなければ参加
             if (communityMember.length < community[0].member_limits) {
-                addUserCommunity(community[0].community_id, "hello"); //引数　入るコミュニティID,　個人が特定されないニックネーム
+                //addUserCommunity(community[0].community_id, "hello"); //引数　入るコミュニティID,　個人が特定されないニックネーム
             }
             console.log(communityMember);
         }

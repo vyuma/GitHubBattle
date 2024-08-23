@@ -16,7 +16,7 @@ export const getUsersCommunityRegistration = async (userId: string): Promise<{ U
                     UsersCommunityType: {
                         user_id: null,
                         community_id: null,
-                        joined_at: null,
+                        start_date: null,
                         created_at: null,
                         nickname: null
                     }
@@ -29,7 +29,7 @@ export const getUsersCommunityRegistration = async (userId: string): Promise<{ U
                 UsersCommunityType: {
                     user_id: null,
                     community_id: null,
-                    joined_at: null,
+                    start_date: null,
                     created_at: null,
                     nickname: null
                 }
@@ -47,7 +47,7 @@ export const getUsersCommunityRegistration = async (userId: string): Promise<{ U
             UsersCommunityType: {
                 user_id: null,
                 community_id: null,
-                joined_at: null,
+                start_date: null,
                 created_at: null,
                 nickname: null
             }

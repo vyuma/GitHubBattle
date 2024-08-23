@@ -38,7 +38,7 @@ export const createCommunity = async (name: string, detail: string, startDate: D
             throw error;
         }
 
-        addUserCommunity(data.community_id, nickname);
+        addUserCommunity(data.community_id, nickname,startDate);
         return true;
     } catch (error) {
         console.error('コミュニティ作成エラー:', error);

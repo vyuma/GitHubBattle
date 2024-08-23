@@ -54,7 +54,7 @@ const CommunityDetailPage = () => {
     const memberCount = community_members.length;
 
     const handleJoinCommunity=async ()=>{
-       const isSucess= await addUserCommunity(communityId,nickname);
+       const isSucess= await addUserCommunity(communityId,nickname,startDate as unknown as Date);
        if(isSucess){
         router.push(`/community/${communityId}/chat`);
        }
@@ -133,6 +133,7 @@ const CommunityDetailPage = () => {
                 <input
                     type="text"
                     id="nickname"
+
                     onChange={(e) => setNickname(e.target.value)}
                     placeholder="ニックネームを入力"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
