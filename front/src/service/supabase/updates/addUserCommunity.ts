@@ -1,6 +1,6 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
-export const addUserCommunity = async (community_id: string, nickname: string): Promise<boolean> => {
+export const addUserCommunity = async (community_id: string, nickname: string,startDate:Date): Promise<boolean> => {
     const supabase = createClientComponentClient();
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
     if (sessionError) {
@@ -16,12 +16,7 @@ export const addUserCommunity = async (community_id: string, nickname: string): 
             .upsert({
                 user_id: session.user.id,
                 community_id: community_id,
-                joined_at: new Date().toLocaleDateString('ja-JP', {
-                    timeZone: 'Asia/Tokyo',
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                }),
+                start_date: startDate,
                 nickname: nickname
             });
 

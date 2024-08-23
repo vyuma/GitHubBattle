@@ -74,13 +74,13 @@ const CommunityDetailPage = () => {
     const memberLimits = currentCommunity?.member_limits;
     const memberCount = community_members.length;
 
-    const handleJoinCommunity = async () => {
-        if (isBattleAlreadyStarted) return;
-        const isSucess = await addUserCommunity(communityId, nickname);
-        if (isSucess) {
-            router.push(`/community/${communityId}/chat`);
-        }
-    };
+    const handleJoinCommunity=async ()=>{
+       const isSucess= await addUserCommunity(communityId,nickname,startDate as unknown as Date);
+       if(isSucess){
+        router.push(`/community/${communityId}/chat`);
+       }
+
+    }
 
     if (!session) {
         return (
