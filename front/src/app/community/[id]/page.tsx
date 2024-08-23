@@ -34,7 +34,7 @@ const CommunityDetailPage: React.FC = () => {
             setDisplay(community);
 
             const communityMembers = await getCommunityMembers(
-                community[0].community_id
+                communityId?.toString()
             );
             setCommunityMembers(communityMembers);
         };
@@ -79,9 +79,18 @@ const CommunityDetailPage: React.FC = () => {
                             {currentCommunity.detail}
                         </p>
                         <div className="mb-6 bg-gray-50 p-4 rounded-md">
-                            <h2 className="text-xl font-semibold text-gray-800 mb-3">
-                                メンバー
-                            </h2>
+                            {community_members.length === 0 && (
+                                <p className="text-gray-600">
+                                    メンバーはいません
+                                </p>
+                            )}
+
+                            {community_members.length !== 0 && (
+                                <h2 className="text-xl font-semibold text-gray-800 mb-3">
+                                    メンバー
+                                </h2>
+                            )}
+
                             <ul className="list-disc list-inside space-y-1">
                                 {community_members.map((member) => (
                                     <li
@@ -96,9 +105,7 @@ const CommunityDetailPage: React.FC = () => {
                         <div className="flex items-center justify-between mb-6">
                             <p className="text-sm text-gray-600">
                                 バトル開始日：
-                                <span className="font-medium">
-                                    {startDate}
-                                </span>
+                                <span className="font-medium">{startDate}</span>
                             </p>
                             <p className="text-sm text-gray-600">
                                 メンバー数：
