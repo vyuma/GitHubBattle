@@ -9,7 +9,7 @@
 import { FaPlusCircle, FaSearch } from "react-icons/fa";
 
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { getCommunity } from "@/service/supabase/get/getCommunity";
 import { getCommunityMembers } from "@/service/supabase/get/getCommunityMembers";
 import { getUserSession } from "@/service/supabase/auth/getUserSession";
@@ -17,6 +17,7 @@ import { CommunityType } from "@/constants/communityType";
 import { UsersCommunityType } from "@/constants/usersCommunityType";
 import { getUsersCommunityRegistration } from "@/service/supabase/get/getUsersCommunityRegistration";
 import { getTopContributors } from "@/service/supabase/get/getTopContributors";
+
 type RankingItem = {
     id: string;
     name: string;
