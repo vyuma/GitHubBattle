@@ -20,7 +20,6 @@ export const createCommunity = async (name: string, detail: string, startDate: D
         if (UsersCommunityType.community_id) {
             alert('ユーザーは既にコミュニティに所属しています');
             return false;
-
         }
 
         const { data, error } = await supabase
