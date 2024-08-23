@@ -11,16 +11,20 @@ import { getCommunityMembers } from "@/service/supabase/get/getCommunityMembers"
 import { CommunityType } from "@/constants/communityType";
 import { UsersCommunityType } from "@/constants/usersCommunityType";
 import Link from "next/link";
+import { addUserCommunity } from "@/service/supabase/updates/addUserCommunity";
+import { useRouter } from "next/navigation";
 
-const CommunityDetailPage: React.FC = () => {
+const CommunityDetailPage = () => {
     const [session, setSession] = useState<Session | null>(null);
     const [display, setDisplay] = useState<CommunityType[]>([]);
+    const [nickname, setNickname] = useState<string>('匿名ユーザー');
     const [community_members, setCommunityMembers] = useState<
         UsersCommunityType[]
     >([]);
     const initializationDone = useRef(false);
     const params = useParams();
-    const communityId = params.id;
+    const  communityId:string = params.id as string;;
+    const router = useRouter()
 
     useEffect(() => {
         if (initializationDone.current) return;
@@ -48,6 +52,14 @@ const CommunityDetailPage: React.FC = () => {
     const startDate = currentCommunity?.start_date.toString();
     const memberLimits = currentCommunity?.member_limits;
     const memberCount = community_members.length;
+
+    const handleJoinCommunity=async ()=>{
+       const isSucess= await addUserCommunity(communityId,nickname);
+       if(isSucess){
+        router.push(`/community/${communityId}/chat`);
+       }
+
+    }
 
     if (!session) {
         return (
@@ -114,12 +126,24 @@ const CommunityDetailPage: React.FC = () => {
                                 </span>
                             </p>
                         </div>
-                        <Link
-                            href={`/community/${communityId}/chat`}
-                            className="block w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-md text-center transition duration-300"
-                        >
-                            このコミュニティに参加
-                        </Link>
+                        <div className="mb-4">
+                <label htmlFor="nickname" className="block text-sm font-medium text-gray-700 mb-2">
+                    ニックネーム
+                </label>
+                <input
+                    type="text"
+                    id="nickname"
+                    onChange={(e) => setNickname(e.target.value)}
+                    placeholder="ニックネームを入力"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+            </div>
+            <button
+                onClick={handleJoinCommunity}
+                className="block w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-md text-center transition duration-300"
+            >
+                このコミュニティに参加
+            </button>
                     </div>
                 ) : (
                     <div className="p-8">
@@ -134,3 +158,10 @@ const CommunityDetailPage: React.FC = () => {
 };
 
 export default CommunityDetailPage;
+
+/*                      <Link
+                            href={`/community/${communityId}/chat`}
+                            
+                        >
+                            このコミュニティに参加
+                        </Link> */
