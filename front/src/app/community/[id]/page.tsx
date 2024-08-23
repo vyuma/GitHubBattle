@@ -14,17 +14,28 @@ import Link from "next/link";
 import { addUserCommunity } from "@/service/supabase/updates/addUserCommunity";
 import { useRouter } from "next/navigation";
 
+// 現在の日時を取得する関数
+const getCurrentDate = () => {
+    return new Date();
+};
+
+// startDateと現在の日時を比較する関数
+const isBattleStarted = (startDate: string) => {
+    const currentDate = getCurrentDate();
+    const battleStartDate = new Date(startDate);
+    return currentDate > battleStartDate;
+};
+
 const CommunityDetailPage = () => {
     const [session, setSession] = useState<Session | null>(null);
     const [display, setDisplay] = useState<CommunityType[]>([]);
-    const [nickname, setNickname] = useState<string>('匿名ユーザー');
-    const [community_members, setCommunityMembers] = useState<
-        UsersCommunityType[]
-    >([]);
+    const [nickname, setNickname] = useState<string>("匿名ユーザー");
+    const [community_members, setCommunityMembers] = useState<UsersCommunityType[]>([]);
+    const [isBattleAlreadyStarted, setIsBattleAlreadyStarted] = useState<boolean>(false);
     const initializationDone = useRef(false);
     const params = useParams();
-    const  communityId:string = params.id as string;;
-    const router = useRouter()
+    const communityId: string = params.id as string;
+    const router = useRouter();
 
     useEffect(() => {
         if (initializationDone.current) return;
@@ -41,10 +52,20 @@ const CommunityDetailPage = () => {
                 communityId?.toString()
             );
             setCommunityMembers(communityMembers);
+
+            // バトル開始済みかどうかをチェック
+            const currentCommunity = community.find(
+                (c) => c.community_id === communityId
+            );
+            if (currentCommunity && currentCommunity.start_date) {
+                setIsBattleAlreadyStarted(
+                    isBattleStarted(currentCommunity.start_date.toString())
+                );
+            }
         };
 
         initializeAuth();
-    }, []);
+    }, [communityId]);
 
     const currentCommunity = display.find(
         (community) => community.community_id === communityId
@@ -53,13 +74,13 @@ const CommunityDetailPage = () => {
     const memberLimits = currentCommunity?.member_limits;
     const memberCount = community_members.length;
 
-    const handleJoinCommunity=async ()=>{
-       const isSucess= await addUserCommunity(communityId,nickname);
-       if(isSucess){
-        router.push(`/community/${communityId}/chat`);
-       }
-
-    }
+    const handleJoinCommunity = async () => {
+        if (isBattleAlreadyStarted) return;
+        const isSucess = await addUserCommunity(communityId, nickname);
+        if (isSucess) {
+            router.push(`/community/${communityId}/chat`);
+        }
+    };
 
     if (!session) {
         return (
@@ -126,24 +147,40 @@ const CommunityDetailPage = () => {
                                 </span>
                             </p>
                         </div>
-                        <div className="mb-4">
-                <label htmlFor="nickname" className="block text-sm font-medium text-gray-700 mb-2">
-                    ニックネーム
-                </label>
-                <input
-                    type="text"
-                    id="nickname"
-                    onChange={(e) => setNickname(e.target.value)}
-                    placeholder="ニックネームを入力"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-            </div>
-            <button
-                onClick={handleJoinCommunity}
-                className="block w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-md text-center transition duration-300"
-            >
-                このコミュニティに参加
-            </button>
+                        {!isBattleAlreadyStarted && (
+                            <div className="mb-4">
+                                <label
+                                    htmlFor="nickname"
+                                    className="block text-sm font-medium text-gray-700 mb-2"
+                                >
+                                    ニックネーム
+                                </label>
+                                <input
+                                    type="text"
+                                    id="nickname"
+                                    onChange={(e) =>
+                                        setNickname(e.target.value)
+                                    }
+                                    placeholder="ニックネームを入力"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                />
+                            </div>
+                        )}
+                        {isBattleAlreadyStarted ? (
+                            <div className="mb-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+                                <p className="font-bold">警告</p>
+                                <p>
+                                    このコミュニティはすでにバトルを開始しています。新規参加はできません。
+                                </p>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={handleJoinCommunity}
+                                className="block w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-md text-center transition duration-300"
+                            >
+                                このコミュニティに参加
+                            </button>
+                        )}
                     </div>
                 ) : (
                     <div className="p-8">
@@ -158,10 +195,3 @@ const CommunityDetailPage = () => {
 };
 
 export default CommunityDetailPage;
-
-/*                      <Link
-                            href={`/community/${communityId}/chat`}
-                            
-                        >
-                            このコミュニティに参加
-                        </Link> */
