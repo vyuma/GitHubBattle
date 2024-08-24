@@ -19,6 +19,7 @@ import { getOnlyCommunity } from "@/service/supabase/get/getOnlyCommunity";
 import { communityContributionRnakingType } from "@/constants/communityContributionRnakingType";
 import { getCommunityContribution } from "@/service/supabase/get/getCommunityContribution";
 import RankingItem from "@/components/RankingItem";
+import BottomNavbar from "@/components/BottomNavbar";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [chatMs, setChatMs] = useState<string>("");
@@ -328,6 +329,8 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
                     </button>
                 </div>
             </div>
+
+            <BottomNavbar />
         </>
     );
 };
