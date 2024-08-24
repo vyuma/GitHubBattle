@@ -33,6 +33,7 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [thirtyDaysLater, setThirtyDaysLater] = useState<Date>(new Date());
     const [userCommunityStartDate, setUserCommunityStartDate] = useState<Date>(new Date());
     const [communityInfo, setCommunityInfo] = useState<CommunityType>();
+    const [communityDetail, setCommunityDetail] = useState<string>("");
 
     const [communityRanking, setCommunityRanking] = useState<communityContributionRnakingType | null>();
 
@@ -50,7 +51,6 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     const updateMessages = useCallback((newReceiveChat: receiveChatType) => {
         setReceiveChatData((prevMessages) => {
             if (prevMessages.some((msg) => msg.id === newReceiveChat.id)) {
-                // console.log(newReceiveChat);
                 return prevMessages;
             }
             return [...prevMessages, newReceiveChat];
@@ -180,6 +180,10 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
             });
             const memberXNames = await Promise.all(memberXNamesPromises);
             setXNames(memberXNames);
+
+            // コミュニティの詳細を取得
+            const community = await getOnlyCommunity(params.id);
+            setCommunityDetail(community?.detail as string);
         };
 
         initializeAuth();
@@ -266,7 +270,7 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
                 </h1>
 
                 <p className="text-center text-sm md:text-base text-gray-600 mb-8 px-4 leading-relaxed">
-                    {"communityDetail"}
+                    {communityDetail}
                 </p>
                 
                 <div>
