@@ -11,6 +11,8 @@ import { fetchRealtimeData } from "@/service/supabase/realtime/fetchRealtime";
 import { addMessageDB } from "@/service/supabase/updates/addCommunityMessage";
 import { useEffect, useState, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
+import { useRouter } from "next/navigation";
+import { getUsersCommunityRegistration } from "@/service/supabase/get/getUsersCommunityRegistration";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [chatMs, setChatMs] = useState<string>("");
@@ -23,6 +25,8 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [session, setSession] = useState<Session | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const router = useRouter();
+    const [nickname,setNickname]=useState<string>("匿名");
 
     const scrollToTop = () => {
         messagesEndRef.current?.parentElement?.scrollTo({
@@ -54,11 +58,18 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
 
         const fetchInitialMessages = async () => {
             try {
-                const initialMessages: receiveChatType[] =
+                const initialMessages: receiveChatType[]|boolean =
                     await getCommunityChat(params.id);
-                if (isMounted) {
-                    setReceiveChatData(initialMessages);
-                }
+                    if(initialMessages==true){
+
+                        router.push("/home");
+                    }
+                    if(typeof initialMessages !== "boolean"){
+                        if (isMounted) {
+                            setReceiveChatData(initialMessages as receiveChatType[]);
+                        }
+                    }
+
             } catch (error) {
                 console.error("Error fetching initial messages:", error);
             }
@@ -70,6 +81,18 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
             cleanupFunction();
         };
     }, [params.id]);
+
+    useEffect(()=>{
+        const fetchNickname = async () => {
+            if(session){
+                const userCommunityInfo=await getUsersCommunityRegistration(session.user.id);
+                setNickname(userCommunityInfo.UsersCommunityType.nickname!);
+           }
+        }
+
+        fetchNickname();
+
+    },[session]);
 
     useEffect(() => {
         scrollToBottom();
@@ -99,10 +122,11 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     const handleSendMessage = async () => {
         if (chatMs.trim()) {
             try {
-                const newReceiveChat = await addMessageDB(chatMs, params.id);
-                if (newReceiveChat) {
+                if(session){
+                    const newReceiveChat = await addMessageDB(chatMs, params.id,nickname);
                     updateMessages(newReceiveChat);
                 }
+
                 setChatMs("");
             } catch (error) {
                 console.error("Error sending message:", error);

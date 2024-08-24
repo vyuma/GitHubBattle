@@ -2,7 +2,7 @@ import { receiveChatType } from '@/constants/receiveChatType';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 
-export const addMessageDB = async (message: string, communityId: string): Promise<receiveChatType> => {
+export const addMessageDB = async (message: string, communityId: string,nickname:string): Promise<receiveChatType> => {
     const supabase = createClientComponentClient();
 
     try {
@@ -19,7 +19,7 @@ export const addMessageDB = async (message: string, communityId: string): Promis
             .insert({
                 community_id: communityId,
                 message: message,
-                nickname: "test",
+                nickname: nickname,
                 user_id: session.user.id
             })
             .select()
