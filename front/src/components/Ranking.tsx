@@ -24,6 +24,7 @@ export default function RankingList(props:{rankings:RankingType[],userId:string}
                     // rank={ranking.rank}
                     rank={index+1}
                     identify={isMe(ranking.id,props.userId)}
+                    key={ranking.id}
                     />
             ))}
         </ol>

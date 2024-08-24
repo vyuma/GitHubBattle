@@ -65,8 +65,6 @@ const Ranking: React.FC = () => {
                 setUserRanking(userRank);
                 setUserId(userReg.UsersCommunityType.nickname || "Unknown");
                 setDisplayCurrentCommunityId(userReg.UsersCommunityType.community_id || "");
-                const communityRanking =await getCommunityContribution(displayCurrentCommunityId)
-                setUserCommunityRanking(communityRanking);
 
                 const communityMembers = await getCommunityMembers(userReg.UsersCommunityType.community_id || "");
                 setCommunityMembers(communityMembers);
@@ -95,6 +93,19 @@ const Ranking: React.FC = () => {
         initializeData();
     }, []);
 
+    useEffect(()=>{
+        const fetchCommunityContribution= async ()=>{
+            if(displayCurrentCommunityId){
+                console.log(displayCurrentCommunityId);
+                const newCommunityRanking =await getCommunityContribution(displayCurrentCommunityId)
+                console.log(newCommunityRanking);
+                setUserCommunityRanking(newCommunityRanking);
+            }
+
+        }
+        fetchCommunityContribution();
+    },[displayCurrentCommunityId]);
+
     useEffect(() => {
         const community = displayCommunities.find(
             (community) => community.community_id === displayCurrentCommunityId
@@ -120,7 +131,7 @@ const Ranking: React.FC = () => {
         return {
             id: ranking.community_id,
             name: ranking.community_name,
-            contribution: parseInt(ranking.total_contributions, 0),
+            contribution: (ranking.total_contributions, 0),
             rank: ranking.rank,
         };
     });
@@ -182,7 +193,7 @@ const Ranking: React.FC = () => {
                         : 
                             <UserRank 
                                 name={userCommunityRanking?.community_name || "コミュニティが登録されていません"}
-                                contribution={parseInt(userCommunityRanking?.total_contributions || "0", 0)}
+                                contribution={(userCommunityRanking?.total_contributions || "0", 0)}
                                 rank={userCommunityRanking?.rank || '圏外'}
                                 identify={true}
                             />
