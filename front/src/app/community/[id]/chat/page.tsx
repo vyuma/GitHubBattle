@@ -20,11 +20,13 @@ import { getOnlyCommunity } from "@/service/supabase/get/getOnlyCommunity";
 // コミュニティ用のランキングを取得する関数をインポート
 import { communityContributionRnakingType } from "@/constants/communityContributionRnakingType";
 import { getCommunityContribution } from "@/service/supabase/get/getCommunityContribution";
-import  RankingItem from "@/components/RankingItem";
+import RankingItem from "@/components/RankingItem";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [chatMs, setChatMs] = useState<string>("");
-    const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>([]);
+    const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>(
+        []
+    );
     const [session, setSession] = useState<Session | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -33,10 +35,13 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [githubNames, setGithubNames] = useState<string[]>([]);
     const [xNames, setXNames] = useState<string[]>([]);
     const [thirtyDaysLater, setThirtyDaysLater] = useState<Date>(new Date());
-    const [userCommunityStartDate, setUserCommunityStartDate] = useState<Date>(new Date());
-    const [communityInfo, setCommunityInfo]= useState<CommunityType>();
+    const [userCommunityStartDate, setUserCommunityStartDate] = useState<Date>(
+        new Date()
+    );
+    const [communityInfo, setCommunityInfo] = useState<CommunityType>();
 
-    const [communityRanking,setCommunityRanking]=useState<communityContributionRnakingType|null>();
+    const [communityRanking, setCommunityRanking] =
+        useState<communityContributionRnakingType | null>();
 
     const scrollToTop = () => {
         messagesEndRef.current?.parentElement?.scrollTo({
@@ -93,19 +98,19 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
         };
     }, [params.id]);
 
-    useEffect(()=> {
+    useEffect(() => {
         const fetchCommunity = async () => {
-            const onlyCommunity= await getOnlyCommunity(params.id!);
-            if(onlyCommunity){
+            const onlyCommunity = await getOnlyCommunity(params.id!);
+            if (onlyCommunity) {
                 setCommunityInfo(onlyCommunity);
-            }else{
-                alert("属しているコミュニティの情報が取得できません")
+            } else {
+                alert("属しているコミュニティの情報が取得できません");
             }
-        }
+        };
         fetchCommunity();
-    })
+    }, [params.id]);
 
-    useEffect(()=> {
+    useEffect(() => {
         const fetchNickname = async () => {
             if (session) {
                 const userCommunityInfo = await getUsersCommunityRegistration(
@@ -138,8 +143,11 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
 
             // ユーザーが属しているcommunityのstart_dateを取得
             const userId = session?.user.id;
-            const userCommunity = await getUsersCommunityRegistration(userId as string);
-            const userCommunityStartDateRow = userCommunity.UsersCommunityType.start_date;
+            const userCommunity = await getUsersCommunityRegistration(
+                userId as string
+            );
+            const userCommunityStartDateRow =
+                userCommunity.UsersCommunityType.start_date;
             const userCommunityStartDate = new Date(userCommunityStartDateRow!);
             setUserCommunityStartDate(userCommunityStartDate);
 
@@ -215,31 +223,43 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     return (
         <>
             {thirtyDaysLater <= userCommunityStartDate ? (
-                <div>
-                    <h1>GitHubユーザー名</h1>
-                    {githubNames.map((name) => (
-                        <p>{name}</p>
-                    ))}
+            // {thirtyDaysLater >= userCommunityStartDate ? (  これがテスト用
+                <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg">
+                    <h1 className="text-2xl font-bold mb-6 text-center text-blue-600">
+                        30日が経過しました！<br />
+                        メンバーの皆様のアカウントが共有されます🥳<br />
+                        メッセージを送って繋がりましょう！
+                    </h1>
 
-                    <h1>Xユーザー名</h1>
-                    {xNames.map((name) => (
-                        <p>{name}</p>
-                    ))}
+                    <h2 className="text-xl font-semibold mb-4 text-gray-800">
+                        GitHubユーザー名
+                    </h2>
+                    <ol className="list-decimal list-inside mb-6 space-y-2">
+                        {githubNames.map((name, index) => (
+                            <li
+                                key={index}
+                                className="text-gray-700 bg-gray-100 p-2 rounded"
+                            >
+                                {name}
+                            </li>
+                        ))}
+                    </ol>
+
+                    <h2 className="text-xl font-semibold mb-4 text-gray-800">
+                        Xユーザー名
+                    </h2>
+                    <ol className="list-decimal list-inside space-y-2">
+                        {xNames.map((name, index) => (
+                            <li
+                                key={index}
+                                className="text-gray-700 bg-gray-100 p-2 rounded"
+                            >
+                                {name}
+                            </li>
+                        ))}
+                    </ol>
                 </div>
             ) : null}
-
-            {/* テスト用。以下のコメント外せば試すことができます
-            <div>
-                <h1>GitHubユーザー名</h1>
-                {githubNames.map((name) => (
-                    <p>{name}</p>
-                ))}
-
-                <h1>Xユーザー名</h1>
-                {xNames.map((name) => (
-                    <p>{name}</p>
-                ))}
-            </div> */}
 
             <Navbar session={session} />
 
