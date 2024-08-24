@@ -2,7 +2,7 @@ import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const protectedPaths = ['/home', '/test', '/commynity'];
+const protectedPaths = ['/home', '/test', '/communities','community'];
 
 export async function middleware(req: NextRequest) {
     try {
@@ -29,5 +29,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/home', '/test', '/community', '/login', '/home/(.*)', '/test/(.*)', '/community/(.*)'],
+    matcher: ['/home', '/test', '/community','/communities', '/login', '/home/(.*)', '/test/(.*)', '/community/(.*)', '/communities/(.*)'],
 }
