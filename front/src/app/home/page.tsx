@@ -33,6 +33,8 @@ import RankingList from '@/components/Ranking';
 import {RankingType} from '@/constants/rankings'
 import UserRank from '@/components/RankingItem'
 import { deleteUserCommunity } from "@/service/supabase/delete/deleteUserCommunity";
+import { Session } from "inspector";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 const Ranking: React.FC = () => {
     const [view, setView] = useState<"user" | "community">("user");
@@ -44,7 +46,7 @@ const Ranking: React.FC = () => {
     const [currentCommunity, setCurrentCommunity] = useState<string>("");
     const [userRanking,setUserRanking] = useState<userContributionRankingType|null>(null); // 追加
     // コミュニティに関する部分
-    const [communityInfo,setCommunityInfo]= useState<CommunityType>();
+    const [communityInfo,setCommunityInfo]= useState<CommunityType|null>();
     const [topCommunityContribution,setTopCommunityContribution]= useState<communityContributionRnakingType[]> ([]);
     const [userCommunityRanking,setUserCommunityRanking]=useState<communityContributionRnakingType|null>(null);
 
@@ -72,7 +74,7 @@ const Ranking: React.FC = () => {
                 if(onlyCommunity){
                     setCommunityInfo(onlyCommunity);
                 }else{
-                    alert("属しているコミュニティの情報が取得できません")
+                    console.log("属しているコミュニティの情報が取得できません")
                 }
                 
 
@@ -132,11 +134,19 @@ const Ranking: React.FC = () => {
     const allCommunityRank :RankingType[] = CommunityRanking as RankingType[];
 
     const handleCommunityDropOut = async ()=>{
-                        //const temp= await deleteUserCommunity(session.user.id);
-                //console.log(temp);
-    }
+        const supabase = createClientComponentClient();
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if(session){
+            const isSucess= await deleteUserCommunity(session.user.id);
+            if(isSucess){
+                setCommunityInfo(null);
+                setCommunityMembers([]);
+                setUserCommunityRanking(null);
+                alert("コミュニティを脱退しました");
+            }
+        }
 
-    // 自分の順位を取得する
+    }
     
 
         return (
@@ -189,7 +199,7 @@ const Ranking: React.FC = () => {
                             />
                         : 
                             <UserRank 
-                                name={userCommunityRanking?.community_name || "コミュニティが登録されていません"}
+                                name={userCommunityRanking?.community_name || "コミュニティ活動が開始されていません"}
                                 contribution={userCommunityRanking?.total_contributions || 0}
                                 rank={userCommunityRanking?.rank || '圏外'}
                                 identify={true}
@@ -238,6 +248,14 @@ const Ranking: React.FC = () => {
                     >
                         コミュニティのチャットへ
                     </Link>
+                    <div className="mt-6 text-center">
+                    <button
+                        onClick={handleCommunityDropOut}
+                        className="text-blue-500 hover:text-blue-700 transition duration-300"
+                    >
+                        コミュニティ脱退
+                    </button>
+                </div>
                 </div>
         
                 {/* 右側: 操作ボタン */}
