@@ -30,7 +30,7 @@ const Ranking: React.FC = () => {
     const [community_members, setCommunityMembers] = useState<UsersCommunityType[]>([]); //any TODO 
     const [topContributors, setTopContributors] = useState<RankingItem[]>([]);
     const [displayCommunities, setDisplayCommunities] = useState<CommunityType[]>([]);
-
+    const [userRanking,setUserRanking] = useState<userContributionRankingType|null>(null); // 追加
     useEffect(() => {
         const initializeData = async () => {
             //await getCommunity(0)は今後ランキング上位１０個取得する関数に置き換える予定
