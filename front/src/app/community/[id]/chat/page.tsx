@@ -14,6 +14,10 @@ import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
 import { getUsersCommunityRegistration } from "@/service/supabase/get/getUsersCommunityRegistration";
 import { getOnlyCommunity } from "@/service/supabase/get/getOnlyCommunity";
+// コミュニティ用のランキングを取得する関数をインポート
+import { communityContributionRnakingType } from "@/constants/communityContributionRnakingType";
+import { getCommunityContribution } from "@/service/supabase/get/getCommunityContribution";
+import  RankingItem from "@/components/RankingItem";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [chatMs, setChatMs] = useState<string>("");
@@ -27,6 +31,8 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     const router = useRouter();
     const [nickname,setNickname]=useState<string>("匿名");
     const [communityInfo,setCommunityInfo]= useState<CommunityType>();
+    const [communityRanking,setCommunityRanking]=useState<communityContributionRnakingType|null>();
+
     const scrollToTop = () => {
         messagesEndRef.current?.parentElement?.scrollTo({
             top: 0,
@@ -91,7 +97,7 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
             }
         }
         fetchCommunity();
-    })
+    },[params.id])
 
     useEffect(()=>{
         const fetchNickname = async () => {
@@ -116,6 +122,9 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
 
             const initialSession = await getUserSession();
             setSession(initialSession);
+
+            const CommunityRank = await getCommunityContribution(params.id);
+            setCommunityRanking(CommunityRank);
         };
         initializeAuth();
     }, []);
@@ -152,6 +161,15 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
                 <h1 className="text-center text-2xl md:text-3xl font-extrabold mb-8 mt-4 text-gray-800 tracking-tight leading-tight">
                     『{communityInfo?.name}』
                 </h1>
+                <div>
+                    {/* ここはタイプのミスがでる */}
+                    <RankingItem
+                        name={communityRanking?.community_name}
+                        contribution={communityRanking?.total_contributions}
+                        rank={communityRanking?.rank}
+                        identify={true}
+                    />
+                </div>
 
                 <div
                     className="text-center text-gray-500 my-4 cursor-pointer hover:text-blue-500"
