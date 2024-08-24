@@ -14,6 +14,7 @@ import Link from "next/link";
 import { addUserCommunity } from "@/service/supabase/updates/addUserCommunity";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
+import BottomNavbar from "@/components/BottomNavbar";
 
 // 現在の日時を取得する関数
 const getCurrentDate = () => new Date();
@@ -212,6 +213,8 @@ const CommunityDetailPage = () => {
                     )}
                 </div>
             </div>
+
+            <BottomNavbar />
         </>
     );
 };
