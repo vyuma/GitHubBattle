@@ -24,7 +24,6 @@ const CommunitiesPage: React.FC = () => {
             setSession(initialSession);
             const community = await getCommunity(0);
             setDisplay(community);
-            console.log("communityは、->", community);
         };
 
         initializeAuth();

@@ -7,8 +7,6 @@ const Navbar: React.FC<{ session: Session | null }> = ({ session }) => {
     const handleLogout = async (e: React.MouseEvent) => {
         e.preventDefault();
         await logout();
-        const router = useRouter();
-        router.push("/login");
     };
 
     return (
