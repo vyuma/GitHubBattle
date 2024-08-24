@@ -30,7 +30,7 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [nickname, setNickname] = useState<string>("匿名");
     const [githubNames, setGithubNames] = useState<string[]>([]);
     const [xNames, setXNames] = useState<string[]>([]);
-    const [thirtyDaysLater, setThirtyDaysLater] = useState<Date>(new Date());
+
     const [communityInfo, setCommunityInfo] = useState<CommunityType>();
     const [communityDetail, setCommunityDetail] = useState<string>("");
 
@@ -123,9 +123,9 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
                     setUserCommunityStartDate(startDate);
                 }
                 const now = new Date();
+
                 const japanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
                 const isLastDayOfMonth = checkLastDayOfMonth(japanTime);
-                console.log(japanTime)
                 setIsMonthEnd(isLastDayOfMonth);
             }
         };
@@ -150,20 +150,6 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
             if (!initialSession) {
                 router.push("/login");
             }
-
-            // ユーザーが属しているcommunityのstart_dateを取得
-            const userId = session?.user.id;
-            const userCommunity = await getUsersCommunityRegistration(
-                userId as string
-            );
-            const userCommunityStartDateRow = userCommunity.UsersCommunityType.start_date;
-            const userCommunityStartDate = new Date(userCommunityStartDateRow!);
-            setUserCommunityStartDate(userCommunityStartDate);
-
-            // そこから、30日後の日付を取得
-            const thirtyDaysLater = new Date(userCommunityStartDate);
-            thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30); // setDateは日付を変更するメソッド, getDateは日付を取得するメソッド
-            setThirtyDaysLater(thirtyDaysLater);
 
             // メンバー全員のgithub_nameを取得
             const members = await getCommunityMembers(params.id);
@@ -244,7 +230,6 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
             // {thirtyDaysLater >= userCommunityStartDate ? (  これがテスト用
                 <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg">
                     <h1 className="text-2xl font-bold mb-6 text-center text-blue-600">
-                        30日が経過しました！<br />
                         メンバーの皆様のアカウントが共有されます🥳<br />
                         メッセージを送って繋がりましょう！
                     </h1>
@@ -303,11 +288,6 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
                         </div>
                     )}
                 </div>
-                {userCommunityStartDate && (
-                    <div>
-                        {userCommunityStartDate.toISOString()}
-                    </div>
-                )}    
 
                 <div
                     className="text-center text-gray-500 my-4 cursor-pointer hover:text-blue-500"
