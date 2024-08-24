@@ -2,11 +2,9 @@
 
 import Message from "@/components/Message";
 import { receiveChatType } from "@/constants/receiveChatType";
-import { getCommunityAndCnt } from "@/service/supabase/get/getCommunity";
 import { getCommunityChat } from "@/service/supabase/get/getCommunityChat";
 import { getUserSession } from "@/service/supabase/auth/getUserSession";
 import { getUsersCommunityRegistration } from "@/service/supabase/get/getUsersCommunityRegistration";
-import { getOneCommunity } from "@/service/supabase/get/getCommunity";
 import { getCommunityMembers } from "@/service/supabase/get/getCommunityMembers";
 import { getUser } from "@/service/supabase/get/getUser";
 import { CommunityType } from "@/constants/communityType";
@@ -24,9 +22,7 @@ import RankingItem from "@/components/RankingItem";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [chatMs, setChatMs] = useState<string>("");
-    const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>(
-        []
-    );
+    const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>([]);
     const [session, setSession] = useState<Session | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -34,6 +30,8 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [nickname, setNickname] = useState<string>("匿名");
     const [githubNames, setGithubNames] = useState<string[]>([]);
     const [xNames, setXNames] = useState<string[]>([]);
+    const [thirtyDaysLater, setThirtyDaysLater] = useState<Date>(new Date());
+    const [userCommunityStartDate, setUserCommunityStartDate] = useState<Date>(new Date());
     const [communityInfo, setCommunityInfo] = useState<CommunityType>();
 
     const [communityRanking, setCommunityRanking] =
@@ -154,6 +152,20 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
                 router.push("/login");
             }
 
+            // ユーザーが属しているcommunityのstart_dateを取得
+            const userId = session?.user.id;
+            const userCommunity = await getUsersCommunityRegistration(
+                userId as string
+            );
+            const userCommunityStartDateRow = userCommunity.UsersCommunityType.start_date;
+            const userCommunityStartDate = new Date(userCommunityStartDateRow!);
+            setUserCommunityStartDate(userCommunityStartDate);
+
+            // そこから、30日後の日付を取得
+            const thirtyDaysLater = new Date(userCommunityStartDate);
+            thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30); // setDateは日付を変更するメソッド, getDateは日付を取得するメソッド
+            setThirtyDaysLater(thirtyDaysLater);
+
             // メンバー全員のgithub_nameを取得
             const members = await getCommunityMembers(params.id);
             const memberIds = members.map((member) => member.user_id);
@@ -192,6 +204,11 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     }, []);
 
     const handleSendMessage = async () => {
+        if (chatMs.length > 500) {
+            alert("メッセージは500文字以内で入力してください");
+            return;
+        }
+
         if (chatMs.trim()) {
             try {
                 if (session) {
@@ -269,6 +286,7 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
                 <p className="text-center text-sm md:text-base text-gray-600 mb-8 px-4 leading-relaxed">
                     {"communityDetail"}
                 </p>
+                
                 <div>
                     {communityRanking && (
                         <div className="community-ranking-container">
@@ -278,7 +296,7 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
                                 contribution={communityRanking.total_contributions}
                                 rank={communityRanking.rank}
                                 identify={true}
-                        />
+                            />
                         </div>
                     )}
                 </div>
