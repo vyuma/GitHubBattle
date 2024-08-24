@@ -1,6 +1,5 @@
 import { Session } from "@supabase/supabase-js";
 import { logout } from "@/service/supabase/auth/logout";
-import { useRouter } from "next/router";
 import Link from "next/link";
 
 const Navbar: React.FC<{ session: Session | null }> = ({ session }) => {

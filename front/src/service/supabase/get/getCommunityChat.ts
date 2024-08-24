@@ -14,7 +14,6 @@ export const getCommunityChat = async (communityId: string): Promise<receiveChat
 
     const { UsersCommunityType } = await getUsersCommunityRegistration(session.user.id);
 
-
     if (UsersCommunityType.community_id !== communityId) {
         alert('このコミュニティには所属していません');
         return [];
@@ -35,6 +34,7 @@ export const getCommunityChat = async (communityId: string): Promise<receiveChat
         return (data as receiveChatType[]).reverse()
     } catch (error) {
         console.error('Error fetching initial data:', error)
+        alert('エラーが発生しました');
         return [];
     }
 }

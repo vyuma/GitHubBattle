@@ -30,7 +30,6 @@ export default function Test() {
             console.log(communityMember);
         }
 
-
         initializeAuth();
     }, []);
 
