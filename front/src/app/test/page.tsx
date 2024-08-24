@@ -50,8 +50,8 @@ export default function Test() {
             const fetchUserContribution = async () => {
                 const userContributionInfo = await getUserContribution(session.user.id);
                 console.log(userContributionInfo);
-                const temp= await deleteUserCommunity(session.user.id);
-                console.log(temp);
+                //const temp= await deleteUserCommunity(session.user.id);
+                //console.log(temp);
             };
 
             fetchUserContribution();

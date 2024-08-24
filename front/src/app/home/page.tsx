@@ -212,10 +212,10 @@ const Ranking: React.FC = () => {
                 {/* 中央: 自分のコミット情報 */}
                 <div className="w-full md:w-1/3 p-6 flex flex-col items-center justify-center bg-white shadow-lg">
                     <div className="text-center mb-8">
+                        <p className="text-gray-600">あなたの月間コントリビューション数</p>
                         <h2 className="text-3xl font-bold text-gray-800 mb-2">
                             {userRanking?.total_contributions || 0}
                         </h2>
-                        <p className="text-gray-600">あなたの月間コントリビュート数</p>
                     </div>
         
                     <div className="w-full bg-gray-100 p-6 rounded-lg mb-8">
