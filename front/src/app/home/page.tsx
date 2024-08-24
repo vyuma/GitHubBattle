@@ -27,12 +27,10 @@ const Ranking: React.FC = () => {
     const [view, setView] = useState<"user" | "community">("user");
     const [userId, setUserId] = useState<string>("");
     const [displayCurrentCommunityId, setDisplayCurrentCommunityId] = useState<string>("");
-    const [community_members, setCommunityMembers] = useState<UsersCommunityType[]>([]);
+    const [community_members, setCommunityMembers] = useState<UsersCommunityType[]>([]); //any TODO 
     const [topContributors, setTopContributors] = useState<RankingItem[]>([]);
     const [displayCommunities, setDisplayCommunities] = useState<CommunityType[]>([]);
-    const [currentCommunity, setCurrentCommunity] = useState<string>("");
     const [userRanking,setUserRanking] = useState<userContributionRankingType|null>(null); // 追加
-
     useEffect(() => {
         const initializeData = async () => {
             //await getCommunity(0)は今後ランキング上位１０個取得する関数に置き換える予定
@@ -62,13 +60,6 @@ const Ranking: React.FC = () => {
 
         initializeData();
     }, []);
-
-    useEffect(() => {
-        const community = displayCommunities.find(
-            (community) => community.community_id === displayCurrentCommunityId
-        );
-        setCurrentCommunity(community?.name || "");
-    }, [displayCurrentCommunityId, displayCommunities]);
 
     const calculateRankings = (items: RankingItem[]): RankingItem[] => {
         return items
@@ -124,7 +115,7 @@ const Ranking: React.FC = () => {
                             <li
                                 key={index}
                                 className={`flex justify-between items-center p-3 rounded-lg ${
-                                    item.name === (view === "user" ? userId : currentCommunity)
+                                    item.name === (view === "user" ? userId : "currentCommunity")
                                         ? "bg-blue-100 text-blue-800"
                                         : "bg-gray-50"
                                 }`}
@@ -161,7 +152,7 @@ const Ranking: React.FC = () => {
         
                     <div className="w-full bg-gray-100 p-6 rounded-lg mb-8">
                         <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                            所属コミュニティ: {currentCommunity}
+                            所属コミュニティ: {"currentCommunity"}
                         </h2>
         
                         <h3 className="text-lg font-medium text-gray-700 mb-2">

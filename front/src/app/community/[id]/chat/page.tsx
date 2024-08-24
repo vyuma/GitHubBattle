@@ -2,7 +2,7 @@
 
 import Message from "@/components/Message";
 import { receiveChatType } from "@/constants/receiveChatType";
-import { getCommunity } from "@/service/supabase/get/getCommunity";
+import { getCommunityAndCnt } from "@/service/supabase/get/getCommunity";
 import { getCommunityChat } from "@/service/supabase/get/getCommunityChat";
 import { getUserSession } from "@/service/supabase/auth/getUserSession";
 import { CommunityType } from "@/constants/communityType";
@@ -16,9 +16,7 @@ import { getUsersCommunityRegistration } from "@/service/supabase/get/getUsersCo
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [chatMs, setChatMs] = useState<string>("");
-    const [displayCommunities, setDisplayCommunities] = useState<
-        CommunityType[]
-    >([]);
+
     const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>(
         []
     );
@@ -102,9 +100,6 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
         inputRef.current?.focus();
 
         const initializeAuth = async () => {
-            // コミュニティ一覧(最新20件)
-            const communities = await getCommunity(0);
-            setDisplayCommunities(communities);
 
             const initialSession = await getUserSession();
             setSession(initialSession);
@@ -112,12 +107,6 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
         initializeAuth();
     }, []);
 
-    const communityName = displayCommunities.find(
-        (community) => community.community_id === params.id
-    )?.name;
-    const communityDetail = displayCommunities.find(
-        (community) => community.community_id === params.id
-    )?.detail;
 
     const handleSendMessage = async () => {
         if (chatMs.trim()) {
@@ -148,14 +137,12 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
 
             <div className="max-w-2xl mx-auto p-4">
                 <h1 className="text-center text-2xl md:text-3xl font-extrabold mb-8 mt-4 text-gray-800 tracking-tight leading-tight">
-                    『{communityName}』
+                    『{"communityName"}』
                 </h1>
 
-                {communityDetail && (
-                    <p className="text-center text-sm md:text-base text-gray-600 mb-8 px-4 leading-relaxed">
-                        {communityDetail}
+                <p className="text-center text-sm md:text-base text-gray-600 mb-8 px-4 leading-relaxed">
+                        {"communityDetail"}
                     </p>
-                )}
 
                 <div
                     className="text-center text-gray-500 my-4 cursor-pointer hover:text-blue-500"
