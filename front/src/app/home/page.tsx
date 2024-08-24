@@ -40,7 +40,7 @@ const Ranking: React.FC = () => {
     const [displayCurrentCommunityId, setDisplayCurrentCommunityId] = useState<string>("");
     const [community_members, setCommunityMembers] = useState<UsersCommunityType[]>([]);
     const [topContributors, setTopContributors] = useState<RankingItem[]>([]);
-    const [displayCommunities, setDisplayCommunities] = useState<CommunityType[]>([]);
+
     const [currentCommunity, setCurrentCommunity] = useState<string>("");
     const [userRanking,setUserRanking] = useState<userContributionRankingType|null>(null); // 追加
     // コミュニティに関する部分
@@ -52,14 +52,12 @@ const Ranking: React.FC = () => {
 
     useEffect(() => {
         const initializeData = async () => {
-            //await getCommunity(0)は今後ランキング上位１０個取得する関数に置き換える予定
-            const communities = await getCommunity(0);
-            setDisplayCommunities(communities);
 
             const session = await getUserSession();
             if (session?.user) {
                 const userReg = await getUsersCommunityRegistration(session.user.id);
                 console.log(userReg);
+                setCurrentCommunity(userReg.UsersCommunityType.nickname || "所属していません");
 
                 // ユーザーのランキングを取得する
                 const userRank = await getUserContribution(session.user.id);
@@ -107,13 +105,6 @@ const Ranking: React.FC = () => {
         }
         fetchCommunityContribution();
     },[displayCurrentCommunityId]);
-
-    useEffect(() => {
-        const community = displayCommunities.find(
-            (community) => community.community_id === displayCurrentCommunityId
-        );
-        setCurrentCommunity(community?.name || "");
-    }, [displayCurrentCommunityId, displayCommunities]);
 
     const ContributersRanking =topContributors.map((ranking)=>{
         return {
