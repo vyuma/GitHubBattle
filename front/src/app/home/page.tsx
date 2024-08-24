@@ -22,8 +22,6 @@ import { RankingItem } from "@/constants/rankingItem";
 import { userContributionRankingType } from "@/constants/userContributionRankingType";
 import { getOnlyCommunity } from "@/service/supabase/get/getOnlyCommunity";
 
-
-
 const Ranking: React.FC = () => {
     const [view, setView] = useState<"user" | "community">("user");
     const [userId, setUserId] = useState<string>("");
