@@ -110,7 +110,7 @@ const Ranking: React.FC = () => {
                     </div>
         
                     <h1 className="mb-4 text-2xl font-bold text-gray-800">
-                        {view === "user" ? "月間コミットランキング" : "コミュニティランキング"}
+                        {view === "user" ? "月間コントリビュートランキング" : "コミュニティランキング"}
                     </h1>
         
                     <ol className="space-y-2">
@@ -125,7 +125,7 @@ const Ranking: React.FC = () => {
                             >
                                 <span className="font-semibold">{`${item.rank}. ${item.name}`}</span>
                                 <span className="text-sm text-gray-600">
-                                    {item.commits}コミット
+                                    {item.commits}コントリビュート
                                 </span>
                             </li>
                         ))}
@@ -138,7 +138,7 @@ const Ranking: React.FC = () => {
                         <h2 className="text-3xl font-bold text-gray-800 mb-2">
                             {topContributors.find((user) => user.id === userId)?.commits || 0}
                         </h2>
-                        <p className="text-gray-600">あなたの月間コミット数</p>
+                        <p className="text-gray-600">あなたの月間コントリビュート数</p>
                     </div>
         
                     <div className="w-full bg-gray-100 p-6 rounded-lg mb-8">
