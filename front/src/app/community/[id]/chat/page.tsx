@@ -13,6 +13,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
 import { getUsersCommunityRegistration } from "@/service/supabase/get/getUsersCommunityRegistration";
+import { getOnlyCommunity } from "@/service/supabase/get/getOnlyCommunity";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [chatMs, setChatMs] = useState<string>("");
@@ -25,7 +26,7 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
     const [nickname,setNickname]=useState<string>("匿名");
-
+    const [communityInfo,setCommunityInfo]= useState<CommunityType>();
     const scrollToTop = () => {
         messagesEndRef.current?.parentElement?.scrollTo({
             top: 0,
@@ -79,6 +80,18 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
             cleanupFunction();
         };
     }, [params.id]);
+
+    useEffect(()=>{
+        const fetchCommunity =async ()=>{
+            const onlyCommunity= await getOnlyCommunity(params.id!);
+            if(onlyCommunity){
+                setCommunityInfo(onlyCommunity);
+            }else{
+                alert("属しているコミュニティの情報が取得できません")
+            }
+        }
+        fetchCommunity();
+    })
 
     useEffect(()=>{
         const fetchNickname = async () => {
@@ -137,12 +150,8 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
 
             <div className="max-w-2xl mx-auto p-4">
                 <h1 className="text-center text-2xl md:text-3xl font-extrabold mb-8 mt-4 text-gray-800 tracking-tight leading-tight">
-                    『{"communityName"}』
+                    『{communityInfo?.name}』
                 </h1>
-
-                <p className="text-center text-sm md:text-base text-gray-600 mb-8 px-4 leading-relaxed">
-                        {"communityDetail"}
-                    </p>
 
                 <div
                     className="text-center text-gray-500 my-4 cursor-pointer hover:text-blue-500"
