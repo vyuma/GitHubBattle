@@ -10,7 +10,9 @@ export const getUserContribution = async (userId: string): Promise<userContribut
             .from('user_contribution')
             .select('*')
             .eq('user_id', userId)
-            .single()
+            .maybeSingle()
+            // .single()
+
 
         if (userError) throw userError
         if (!userData) return null
