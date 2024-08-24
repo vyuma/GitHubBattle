@@ -20,17 +20,35 @@ import { getTopUserContributors } from "@/service/supabase/get/getTopUserContrib
 import { getUserContribution } from '@/service/supabase/get/getUserContribution';          // 追加
 import { RankingItem } from "@/constants/rankingItem";
 import { userContributionRankingType } from "@/constants/userContributionRankingType";
+
 import { getOnlyCommunity } from "@/service/supabase/get/getOnlyCommunity";
+// コミュニティ用のランキングを取得する関数をインポート
+import { communityContributionRnakingType } from "@/constants/communityContributionRnakingType";
+import { getCommunityContribution } from "@/service/supabase/get/getCommunityContribution";
+
+
+import {getTopCommunityContribution} from "@/service/supabase/get/getTopCommunityContribution";
+
+import RankingList from '@/components/Ranking';
+import {RankingType} from '@/constants/rankings'
+import UserRank from '@/components/RankingItem'
 
 const Ranking: React.FC = () => {
     const [view, setView] = useState<"user" | "community">("user");
     const [userId, setUserId] = useState<string>("");
     const [displayCurrentCommunityId, setDisplayCurrentCommunityId] = useState<string>("");
-    const [community_members, setCommunityMembers] = useState<UsersCommunityType[]>([]); //any TODO 
+    const [community_members, setCommunityMembers] = useState<UsersCommunityType[]>([]);
     const [topContributors, setTopContributors] = useState<RankingItem[]>([]);
     const [displayCommunities, setDisplayCommunities] = useState<CommunityType[]>([]);
+    const [currentCommunity, setCurrentCommunity] = useState<string>("");
     const [userRanking,setUserRanking] = useState<userContributionRankingType|null>(null); // 追加
+    // コミュニティに関する部分
     const [communityInfo,setCommunityInfo]= useState<CommunityType>();
+    const [topCommunityContribution,setTopCommunityContribution]= useState<communityContributionRnakingType[]> ([]);
+    const [userCommunityRanking,setUserCommunityRanking]=useState<communityContributionRnakingType|null>(null);
+
+
+
     useEffect(() => {
         const initializeData = async () => {
             //await getCommunity(0)は今後ランキング上位１０個取得する関数に置き換える予定
@@ -41,11 +59,14 @@ const Ranking: React.FC = () => {
             if (session?.user) {
                 const userReg = await getUsersCommunityRegistration(session.user.id);
                 console.log(userReg);
+
                 // ユーザーのランキングを取得する
                 const userRank = await getUserContribution(session.user.id);
                 setUserRanking(userRank);
                 setUserId(userReg.UsersCommunityType.nickname || "Unknown");
                 setDisplayCurrentCommunityId(userReg.UsersCommunityType.community_id || "");
+                const communityRanking =await getCommunityContribution(displayCurrentCommunityId)
+                setUserCommunityRanking(communityRanking);
 
                 const communityMembers = await getCommunityMembers(userReg.UsersCommunityType.community_id || "");
                 setCommunityMembers(communityMembers);
@@ -64,33 +85,51 @@ const Ranking: React.FC = () => {
                     name: c.user_name,
                     commits: parseInt(c.total_contributions, 10)
                 })));
+
+                const topCommunityContribute = await getTopCommunityContribution();
+                setTopCommunityContribution(topCommunityContribute);
+                
             }
         };
 
         initializeData();
     }, []);
 
-    const calculateRankings = (items: RankingItem[]): RankingItem[] => {
-        return items
-            .sort((a, b) => (b.commits || 0) - (a.commits || 0))
-            .map((item, index, arr) => ({
-                ...item,
-                rank: index > 0 && item.commits === arr[index - 1].commits ? arr[index - 1].rank : index + 1
-            }))
-            .slice(0, 10);
-    };
+    useEffect(() => {
+        const community = displayCommunities.find(
+            (community) => community.community_id === displayCurrentCommunityId
+        );
+        setCurrentCommunity(community?.name || "");
+    }, [displayCurrentCommunityId, displayCommunities]);
+
+    const ContributersRanking =topContributors.map((ranking)=>{
+        return {
+            id: ranking.id,
+            name: ranking.name,
+            contribution: ranking.commits,
+            rank: ranking.rank,
+        };
+    }) 
 
     
 
-    const displayRankings = view === "user" 
-        ? calculateRankings(topContributors)
-        : calculateRankings(displayCommunities.map(c => ({
-            id: c.community_id,
-            name: c.name,
-            member_limits: c.member_limits,
-            commits: 10,
-            rank:1,
-        })));
+// コミュニティランキングのデータを作成
+    const CommunityRanking = topCommunityContribution.map((
+        ranking
+    )=>{
+        return {
+            id: ranking.community_id,
+            name: ranking.community_name,
+            contribution: parseInt(ranking.total_contributions, 0),
+            rank: ranking.rank,
+        };
+    });
+    const allUserRank :RankingType[] = ContributersRanking as RankingType[];
+    const allCommunityRank :RankingType[] = CommunityRanking as RankingType[];
+
+
+    // 自分の順位を取得する
+    
 
         return (
             <div className="flex flex-col md:flex-row h-screen bg-gray-100">
@@ -118,33 +157,37 @@ const Ranking: React.FC = () => {
                     </h1>
         
                     <ol className="space-y-2">
-                        {displayRankings.map((item, index) => (
-                            <li
-                                key={index}
-                                className={`flex justify-between items-center p-3 rounded-lg ${
-                                    item.name === (view === "user" ? userId : "currentCommunity")
-                                        ? "bg-blue-100 text-blue-800"
-                                        : "bg-gray-50"
-                                }`}
-                            >
-                                <span className="font-semibold">{`${item.rank}. ${item.name}`}</span>
-                                <span className="text-sm text-gray-600">
-                                    {item.commits}コントリビュート
-                                </span>
-                            </li>
-                            ))
+                        {view === "user"
+                            ? 
+                                <RankingList
+                                    rankings={allUserRank}
+                                    userId={userId}
+                                />
+                            :
+                                <RankingList
+                                    rankings={allCommunityRank}
+                                    userId={displayCurrentCommunityId}
+                                />
                         }
-                        <li
-                                key={userRanking?.rank}
-                                // ユーザーのランキングを表示する関数
-                                className={`flex justify-between items-center p-3 rounded-lg `}
-                            >
-                              <span className="font-semibold">{userRanking ?`${userRanking?.rank}. ${userRanking?.user_name}`:'あなたはランキング対象外です'}</span>
-                              <span className="text-sm text-gray-600">
-                                    {userRanking?.total_contributions}コントリビュート
-                                </span>
-
-                            </li>
+                        {/* 自分が何位化を取得する もし自分の順位が決まっていなかったら登録されていませんになる */}
+                        {
+                        view === "user" 
+                        ?
+                            <UserRank 
+                                name={userRanking?.user_name || "登録されていません"}
+                                contribution={userRanking?.total_contributions || 0}
+                                rank={userRanking?.rank || '圏外'}
+                                identify={true}
+                            />
+                        : 
+                            <UserRank 
+                                name={userCommunityRanking?.community_name || "コミュニティが登録されていません"}
+                                contribution={parseInt(userCommunityRanking?.total_contributions || "0", 0)}
+                                rank={userCommunityRanking?.rank || '圏外'}
+                                identify={true}
+                            />
+                        }
+                        
                     </ol>
                 </div>
         
