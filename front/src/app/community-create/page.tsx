@@ -31,6 +31,11 @@ const CreateCommunity = () => {
     }, []);
 
     const handleCreate = async (e: React.FormEvent): Promise<void> => {
+        if (nickname.length < 2) {
+            alert("ニックネームは2文字以上で入力してください");
+            return;
+        }
+
         e.preventDefault();
 
         try {

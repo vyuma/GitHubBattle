@@ -20,8 +20,7 @@ import { getTopUserContributors } from "@/service/supabase/get/getTopUserContrib
 import { getUserContribution } from '@/service/supabase/get/getUserContribution';          // 追加
 import { RankingItem } from "@/constants/rankingItem";
 import { userContributionRankingType } from "@/constants/userContributionRankingType";
-
-
+import { getOnlyCommunity } from "@/service/supabase/get/getOnlyCommunity";
 
 const Ranking: React.FC = () => {
     const [view, setView] = useState<"user" | "community">("user");
@@ -33,6 +32,7 @@ const Ranking: React.FC = () => {
     const [currentCommunity, setCurrentCommunity] = useState<string>("");
     const [userRanking,setUserRanking] = useState<userContributionRankingType|null>(null); // 追加
 
+    const [communityInfo,setCommunityInfo]= useState<CommunityType>();
     useEffect(() => {
         const initializeData = async () => {
             //await getCommunity(0)は今後ランキング上位１０個取得する関数に置き換える予定
@@ -42,6 +42,7 @@ const Ranking: React.FC = () => {
             const session = await getUserSession();
             if (session?.user) {
                 const userReg = await getUsersCommunityRegistration(session.user.id);
+                console.log(userReg);
                 // ユーザーのランキングを取得する
                 const userRank = await getUserContribution(session.user.id);
                 setUserRanking(userRank);
@@ -50,6 +51,14 @@ const Ranking: React.FC = () => {
 
                 const communityMembers = await getCommunityMembers(userReg.UsersCommunityType.community_id || "");
                 setCommunityMembers(communityMembers);
+
+                const onlyCommunity= await getOnlyCommunity(userReg.UsersCommunityType.community_id!);
+                if(onlyCommunity){
+                    setCommunityInfo(onlyCommunity);
+                }else{
+                    alert("属しているコミュニティの情報が取得できません")
+                }
+                
 
                 const topContributors = await getTopUserContributors();
                 setTopContributors(topContributors.map(c => ({
@@ -79,8 +88,6 @@ const Ranking: React.FC = () => {
             }))
             .slice(0, 10);
     };
-
-
 
     
 
@@ -153,14 +160,14 @@ const Ranking: React.FC = () => {
                 <div className="w-full md:w-1/3 p-6 flex flex-col items-center justify-center bg-white shadow-lg">
                     <div className="text-center mb-8">
                         <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                            {topContributors.find((user) => user.id === userId)?.commits || 0}
+                            {userRanking?.total_contributions || 0}
                         </h2>
                         <p className="text-gray-600">あなたの月間コントリビュート数</p>
                     </div>
         
                     <div className="w-full bg-gray-100 p-6 rounded-lg mb-8">
                         <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                            所属コミュニティ: {currentCommunity}
+                            所属コミュニティ: {communityInfo?.name}
                         </h2>
         
                         <h3 className="text-lg font-medium text-gray-700 mb-2">

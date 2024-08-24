@@ -14,6 +14,7 @@ import Link from "next/link";
 import { addUserCommunity } from "@/service/supabase/updates/addUserCommunity";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
+import { getOnlyCommunity } from "@/service/supabase/get/getOnlyCommunity";
 
 // 現在の日時を取得する関数
 const getCurrentDate = () => {
@@ -29,8 +30,8 @@ const isBattleStarted = (startDate: string) => {
 
 const CommunityDetailPage = () => {
     const [session, setSession] = useState<Session | null>(null);
-    const [display, setDisplay] = useState<CommunityType[]>([]);
-    const [nickname, setNickname] = useState<string>("匿名ユーザー");
+    const [nickname, setNickname] = useState<string>("");
+    const [communityInfo,setCommunityInfo]= useState<CommunityType>();
     const [community_members, setCommunityMembers] = useState<
         UsersCommunityType[]
     >([]);
@@ -39,7 +40,7 @@ const CommunityDetailPage = () => {
     const params = useParams();
     const communityId: string = params.id as string;
     const router = useRouter();
-    const isTemp:Boolean=true;
+    const isTemp:Boolean=false;
 
     useEffect(() => {
         if (initializationDone.current) return;
@@ -48,9 +49,6 @@ const CommunityDetailPage = () => {
         const initializeAuth = async () => {
             const initialSession = await getUserSession();
             setSession(initialSession);
-
-            const community = await getCommunity(0);
-            setDisplay(community);
 
             const communityMembers = await getCommunityMembers(
                 communityId?.toString()
@@ -63,11 +61,28 @@ const CommunityDetailPage = () => {
         initializeAuth();
     }, [communityId]);
 
+    useEffect(()=>{
+        const fetchCommunity =async ()=>{
+            const onlyCommunity= await getOnlyCommunity(communityId!);
+            if(onlyCommunity){
+                setCommunityInfo(onlyCommunity);
+            }else{
+                alert("属しているコミュニティの情報が取得できません")
+            }
+        }
+        fetchCommunity();
+    })
+
     const startDate = "2024/08/10";
     const memberLimits = 5;
     const memberCount = 2;//現在のメンバー数
 
     const handleJoinCommunity = async () => {
+        if (nickname.length < 2) {
+            alert("ニックネームは2文字以上で入力してください");
+            return;
+        }
+
         const isSucess = await addUserCommunity(
             communityId,
             nickname,
@@ -105,10 +120,10 @@ const CommunityDetailPage = () => {
                     {true ? (
                         <div className="p-8">
                             <h1 className="text-3xl font-bold text-blue-700 mb-4">
-                                『{"currentCommunity.name"}』
+                                『{communityInfo?.name}』
                             </h1>
                             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                                {"currentCommunity.detail"}
+                                {communityInfo?.detail}
                             </p>
                             <div className="mb-6 bg-gray-50 p-4 rounded-md">
                                 {community_members.length === 0 && (
@@ -150,20 +165,13 @@ const CommunityDetailPage = () => {
                             </div>
                             {!isTemp && (
                                 <div className="mb-4">
-                                    <label
-                                        htmlFor="nickname"
-                                        className="block text-sm font-medium text-gray-700 mb-2"
-                                    >
-                                        ニックネーム
-                                    </label>
                                     <input
                                         type="text"
                                         id="nickname"
-                                        onChange={(e) =>
-                                            setNickname(e.target.value)
-                                        }
+                                        onChange={(e) => setNickname(e.target.value)}
                                         placeholder="ニックネームを入力"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        required
                                     />
                                 </div>
                             )}
