@@ -8,6 +8,8 @@ import { addUserCommunity } from '@/service/supabase/updates/addUserCommunity';
 import { getCommunityMembers } from '@/service/supabase/get/getCommunityMembers';
 import { getUserContribution } from '@/service/supabase/get/getUserContribution';
 import { getCommunityContribution } from '@/service/supabase/get/getCommunityContribution';
+import { getTopUserContributors } from '@/service/supabase/get/getTopUserContributors';
+import { getTopCommunityContribution } from '@/service/supabase/get/getTopCommunityContribution';
 
 export default function Test() {
     const [session, setSession] = useState<Session | null>(null);
@@ -25,8 +27,10 @@ export default function Test() {
             console.log(community);
             //入りたいコミュニティのメンバー取得
             const communityMember = await getCommunityMembers(community[0].community_id);
-            const communityContributionInfo= await getCommunityContribution(community[0].community_id);
+            const communityContributionInfo= await getCommunityContribution("251259c2-4a74-8309-cdfd-0ee5917378e7");
             console.log(communityContributionInfo);
+            const topCommunityContribution= await getTopCommunityContribution();
+            console.log(topCommunityContribution);
             //メンバー上限に達していなければ参加
             if (communityMember.length < community[0].member_limits) {
                 //addUserCommunity(community[0].community_id, "hello"); //引数　入るコミュニティID,　個人が特定されないニックネーム
