@@ -19,9 +19,7 @@ import { useRouter } from "next/navigation";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [chatMs, setChatMs] = useState<string>("");
-    const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>(
-        []
-    );
+    const [receiveChatData, setReceiveChatData] = useState<receiveChatType[]>([]);
     const [session, setSession] = useState<Session | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -30,9 +28,7 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [githubNames, setGithubNames] = useState<string[]>([]);
     const [xNames, setXNames] = useState<string[]>([]);
     const [thirtyDaysLater, setThirtyDaysLater] = useState<Date>(new Date());
-    const [userCommunityStartDate, setUserCommunityStartDate] = useState<Date>(
-        new Date()
-    );
+    const [userCommunityStartDate, setUserCommunityStartDate] = useState<Date>(new Date());
 
     const scrollToTop = () => {
         messagesEndRef.current?.parentElement?.scrollTo({
@@ -113,16 +109,14 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
             const initialSession = await getUserSession();
             setSession(initialSession);
 
-            // ユーザーが属しているcommunityのstart_dateを取得
             if (!initialSession) {
                 router.push("/login");
             }
+
+            // ユーザーが属しているcommunityのstart_dateを取得
             const userId = session?.user.id;
-            const userCommunity = await getUsersCommunityRegistration(
-                userId as string
-            );
-            const userCommunityStartDateRow =
-                userCommunity.UsersCommunityType.start_date;
+            const userCommunity = await getUsersCommunityRegistration(userId as string);
+            const userCommunityStartDateRow = userCommunity.UsersCommunityType.start_date;
             const userCommunityStartDate = new Date(userCommunityStartDateRow!);
             setUserCommunityStartDate(userCommunityStartDate);
 
@@ -197,18 +191,32 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
 
     return (
         <>
+            {thirtyDaysLater <= userCommunityStartDate ? (
+                <div>
+                    <h1>GitHubユーザー名</h1>
+                    {githubNames.map((name) => (
+                        <p>{name}</p>
+                    ))}
+
+                    <h1>Xユーザー名</h1>
+                    {xNames.map((name) => (
+                        <p>{name}</p>
+                    ))}
+                </div>
+            ) : null}
+
+            {/* テスト用。以下のコメント外せば試すことができます
             <div>
-                <h1>30日間連続コントリビュート者の情報が公開されました</h1>
-                <h2>GitHub ユーザー名</h2>
+                <h1>GitHubユーザー名</h1>
                 {githubNames.map((name) => (
                     <p>{name}</p>
                 ))}
 
-                <h2>X ユーザー名</h2>
+                <h1>Xユーザー名</h1>
                 {xNames.map((name) => (
                     <p>{name}</p>
                 ))}
-            </div>
+            </div> */}
 
             <Navbar session={session} />
 
