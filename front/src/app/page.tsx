@@ -12,7 +12,7 @@ const Home: NextPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-100 py-12">
+        <div className="min-h-screen bg-gray-100 py-12 flex flex-col justify-between">
             <div className="container mx-auto px-4 max-w-3xl">
                 <h1 className="text-4xl font-bold text-center text-blue-600 mb-8 animate-fade-in-down">
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500 drop-shadow-[0_2px_2px_rgba(0,0,0,0.3)]">
@@ -50,6 +50,19 @@ const Home: NextPage = () => {
                     >
                         はじめる
                     </Link>
+                </div>
+            </div>
+
+            <div className="bg-white shadow-inner py-4 mt-8">
+                <div className="container mx-auto px-4">
+                    <div className="flex justify-center">
+                        <Link
+                            href="/privacy-policy"
+                            className="text-gray-600 hover:text-blue-500 transition-colors duration-300"
+                        >
+                            プライバシーポリシー
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>
