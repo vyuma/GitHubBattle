@@ -70,11 +70,6 @@ const Ranking: React.FC = () => {
             }))
             .slice(0, 10);
     };
-
-
-
-    
-
     const displayRankings = view === "user" 
         ? calculateRankings(topContributors)
         : calculateRankings(displayCommunities.map(c => ({
@@ -84,6 +79,10 @@ const Ranking: React.FC = () => {
             commits: 10,
             rank:1,
         })));
+
+
+
+        
 
         return (
             <div className="flex flex-col md:flex-row h-screen bg-gray-100">
