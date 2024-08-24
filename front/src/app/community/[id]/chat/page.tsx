@@ -31,7 +31,6 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [githubNames, setGithubNames] = useState<string[]>([]);
     const [xNames, setXNames] = useState<string[]>([]);
     const [thirtyDaysLater, setThirtyDaysLater] = useState<Date>(new Date());
-    const [userCommunityStartDate, setUserCommunityStartDate] = useState<Date>(new Date());
     const [communityInfo, setCommunityInfo] = useState<CommunityType>();
 
     const [communityRanking, setCommunityRanking] =
