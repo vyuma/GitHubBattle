@@ -1,6 +1,6 @@
-import {Ranking} from '@/constants/rankings';
+import {RankingType} from '@/constants/rankings';
 
-export default function RankingItem(props:Ranking,identify:boolean) {
+export default function RankingItem(props:RankingType,identify:boolean) {
 
     if(identify){
         return (

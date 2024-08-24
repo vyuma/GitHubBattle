@@ -1,4 +1,4 @@
-export type Ranking = {
+export type RankingType = {
     id: string;
     name: string;
     contribution: number;
