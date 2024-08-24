@@ -31,12 +31,28 @@ const CreateCommunity = () => {
     }, []);
 
     const handleCreate = async (e: React.FormEvent): Promise<void> => {
+        e.preventDefault();
+
+        if (communityName.length > 30) {
+            alert("コミュニティ名は30文字以内で入力してください");
+            return;
+        }
+        if (description.length > 300) {
+            alert("コミュニティの説明は300文字以内で入力してください");
+            return;
+        }
         if (nickname.length < 2) {
             alert("ニックネームは2文字以上で入力してください");
             return;
         }
-
-        e.preventDefault();
+        if (memberLimits > 10) {
+            alert("メンバー上限人数は10人以内で入力してください");
+            return;
+        }
+        if (memberLimits < 2) {
+            alert("メンバー上限人数は2人以上で入力してください");
+            return;
+        }
 
         try {
             const isSuccess = await createCommunity(
