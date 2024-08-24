@@ -1,5 +1,3 @@
-// コミュニティ一覧ページ
-
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -13,6 +11,8 @@ import Navbar from "@/components/Navbar";
 const CommunitiesPage: React.FC = () => {
     const [session, setSession] = useState<Session | null>(null);
     const [display, setDisplay] = useState<CommunityType[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const initializationDone = useRef(false);
 
     useEffect(() => {
@@ -22,12 +22,39 @@ const CommunitiesPage: React.FC = () => {
         const initializeAuth = async () => {
             const initialSession = await getUserSession();
             setSession(initialSession);
-            const community = await getCommunity(0);
-            setDisplay(community);
+            await fetchCommunities(1);
         };
 
         initializeAuth();
     }, []);
+
+    const fetchCommunities = async (page: number) => {
+        const offset = (page - 1) * 20;
+        const { communities, total } = await getCommunity(offset);
+        setDisplay(communities);
+        setCurrentPage(page);
+        setTotalPages(Math.ceil(total / 20));
+    };
+
+    const renderPagination = () => {
+        const pages = [];
+        for (let i = 1; i <= totalPages; i++) {
+            pages.push(
+                <button
+                    key={i}
+                    onClick={() => fetchCommunities(i)}
+                    className={`px-3 py-1 mx-1 rounded ${
+                        currentPage === i
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-200"
+                    }`}
+                >
+                    {i}
+                </button>
+            );
+        }
+        return pages;
+    };
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -63,6 +90,9 @@ const CommunitiesPage: React.FC = () => {
                                         </Link>
                                     </div>
                                 ))}
+                            </div>
+                            <div className="px-6 py-4 flex justify-center">
+                                {renderPagination()}
                             </div>
                         </div>
                     ) : (
