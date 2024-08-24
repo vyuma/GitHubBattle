@@ -17,6 +17,10 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import Navbar from "@/components/Navbar";
 import { useRouter } from "next/navigation";
 import { getOnlyCommunity } from "@/service/supabase/get/getOnlyCommunity";
+// コミュニティ用のランキングを取得する関数をインポート
+import { communityContributionRnakingType } from "@/constants/communityContributionRnakingType";
+import { getCommunityContribution } from "@/service/supabase/get/getCommunityContribution";
+import  RankingItem from "@/components/RankingItem";
 
 const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [chatMs, setChatMs] = useState<string>("");
@@ -31,6 +35,8 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
     const [thirtyDaysLater, setThirtyDaysLater] = useState<Date>(new Date());
     const [userCommunityStartDate, setUserCommunityStartDate] = useState<Date>(new Date());
     const [communityInfo, setCommunityInfo]= useState<CommunityType>();
+
+    const [communityRanking,setCommunityRanking]=useState<communityContributionRnakingType|null>();
 
     const scrollToTop = () => {
         messagesEndRef.current?.parentElement?.scrollTo({
@@ -97,7 +103,7 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
             }
         }
         fetchCommunity();
-    }, [params.id]);
+    })
 
     useEffect(()=> {
         const fetchNickname = async () => {
@@ -122,6 +128,9 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
         const initializeAuth = async () => {
             const initialSession = await getUserSession();
             setSession(initialSession);
+
+            const CommunityRank = await getCommunityContribution(params.id);
+            setCommunityRanking(CommunityRank);
 
             if (!initialSession) {
                 router.push("/login");
@@ -242,6 +251,15 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
                 <p className="text-center text-sm md:text-base text-gray-600 mb-8 px-4 leading-relaxed">
                     {"communityDetail"}
                 </p>
+                <div>
+                    {/* ここはタイプのミスがでる */}
+                    <RankingItem
+                        name={communityRanking?.community_name}
+                        contribution={communityRanking?.total_contributions}
+                        rank={communityRanking?.rank}
+                        identify={true}
+                    />
+                </div>
 
                 <div
                     className="text-center text-gray-500 my-4 cursor-pointer hover:text-blue-500"
