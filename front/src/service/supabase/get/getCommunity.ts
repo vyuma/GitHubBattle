@@ -16,7 +16,7 @@ export const getCommunityAndCnt = async (offset: number): Promise<{ communities:
         }
 
         return {
-            communities: (data as CommunityType[]).reverse(),
+            communities: (data as CommunityType[]),
             total: count || 0
         };
     } catch (error) {
@@ -60,7 +60,7 @@ export const getOneCommunity = async (communityId: number): Promise<CommunityTyp
             throw error
         }
 
-        return (data as CommunityType[]).reverse();  // このreverseを消せば配列の順序を逆にできる
+        return (data as CommunityType[]);  // このreverseを消せば配列の順序を逆にできる
     } catch (error) {
         console.error('Error fetching initial data:', error)
         return []
