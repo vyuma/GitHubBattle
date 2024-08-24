@@ -40,7 +40,7 @@ const CommunityDetailPage = () => {
     const params = useParams();
     const communityId: string = params.id as string;
     const router = useRouter();
-    const isTemp:Boolean=false;
+    // const isTemp:Boolean=false;
 
     useEffect(() => {
         if (initializationDone.current) return;
@@ -163,7 +163,9 @@ const CommunityDetailPage = () => {
                                     </span>
                                 </p>
                             </div>
-                            {!isTemp && (
+
+                            {/* まだ開始していないなら */}
+                            {!isBattleStarted(startDate) && (
                                 <div className="mb-4">
                                     <input
                                         type="text"
@@ -175,7 +177,9 @@ const CommunityDetailPage = () => {
                                     />
                                 </div>
                             )}
-                            {isTemp ? (
+
+                            {/* もう開始しているなら */}
+                            {isBattleStarted(startDate) ? (
                                 <div className="mb-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
                                     <p className="font-bold">警告</p>
                                     <p>

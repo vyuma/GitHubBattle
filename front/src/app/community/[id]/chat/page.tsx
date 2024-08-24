@@ -271,6 +271,7 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
                 <p className="text-center text-sm md:text-base text-gray-600 mb-8 px-4 leading-relaxed">
                     {"communityDetail"}
                 </p>
+                
                 <div>
                     {communityRanking && (
                         <div className="community-ranking-container">
@@ -280,7 +281,7 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
                                 contribution={communityRanking.total_contributions}
                                 rank={communityRanking.rank}
                                 identify={true}
-                        />
+                            />
                         </div>
                     )}
                 </div>
