@@ -18,14 +18,10 @@ import { UsersCommunityType } from "@/constants/usersCommunityType";
 import { getUsersCommunityRegistration } from "@/service/supabase/get/getUsersCommunityRegistration";
 import { getTopUserContributors } from "@/service/supabase/get/getTopUserContributors";
 import { getUserContribution } from '@/service/supabase/get/getUserContribution';          // 追加
+import { RankingItem } from "@/constants/rankingItem";
+import { userContributionRankingType } from "@/constants/userContributionRankingType";
 
-type RankingItem = {
-    id: string;
-    name: string;
-    commits?: number;
-    member_limits?: number;
-    rank?: number;
-};
+
 
 const Ranking: React.FC = () => {
     const [view, setView] = useState<"user" | "community">("user");
@@ -35,7 +31,7 @@ const Ranking: React.FC = () => {
     const [topContributors, setTopContributors] = useState<RankingItem[]>([]);
     const [displayCommunities, setDisplayCommunities] = useState<CommunityType[]>([]);
     const [currentCommunity, setCurrentCommunity] = useState<string>("");
-    const [userRanking,setUserRanking] = useState<number>(0); // 追加
+    const [userRanking,setUserRanking] = useState<userContributionRankingType|null>(null); // 追加
 
     useEffect(() => {
         const initializeData = async () => {
@@ -48,7 +44,7 @@ const Ranking: React.FC = () => {
                 const userReg = await getUsersCommunityRegistration(session.user.id);
                 // ユーザーのランキングを取得する
                 const userRank = await getUserContribution(session.user.id);
-                setUserRanking(userRank?.rank || 0);
+                setUserRanking(userRank);
                 setUserId(userReg.UsersCommunityType.nickname || "Unknown");
                 setDisplayCurrentCommunityId(userReg.UsersCommunityType.community_id || "");
 
@@ -140,6 +136,14 @@ const Ranking: React.FC = () => {
                             </li>
                             ))
                         }
+                        <li
+                                key={userRanking?.rank}
+                                // ユーザーのランキングを表示する関数
+                                className={`flex justify-between items-center p-3 rounded-lg `}
+                            >
+                              <span className="font-semibold">{userRanking ?`${userRanking?.rank}. ${userRanking?.user_name}`:'あなたはランキング対象外です'}</span>
+
+                            </li>
                     </ol>
                 </div>
         
