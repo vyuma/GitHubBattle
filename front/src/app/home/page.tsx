@@ -57,6 +57,8 @@ const Ranking: React.FC = () => {
     const [userCommunityRanking, setUserCommunityRanking] =
         useState<communityContributionRnakingType | null>(null);
 
+    const [userIdRanking,setUserIdRanking]=useState<string>('');
+
     useEffect(() => {
         const initializeData = async () => {
             const session = await getUserSession();
@@ -64,15 +66,19 @@ const Ranking: React.FC = () => {
                 const userReg = await getUsersCommunityRegistration(
                     session.user.id
                 );
-                console.log(userReg);
+                // console.log(userReg);
                 setCurrentCommunity(
                     userReg.UsersCommunityType.nickname || "所属していません"
                 );
 
+                setUserIdRanking(session.user.id);
+
                 // ユーザーのランキングを取得する
                 const userRank = await getUserContribution(session.user.id);
                 setUserRanking(userRank);
+                // ユーザーIDをセットするとセッターかと思わせてニックネームをセットしている
                 setUserId(userReg.UsersCommunityType.nickname || "Unknown");
+
                 setDisplayCurrentCommunityId(
                     userReg.UsersCommunityType.community_id || ""
                 );
@@ -196,7 +202,7 @@ const Ranking: React.FC = () => {
                         {view === "user" ? (
                             <RankingList
                                 rankings={allUserRank}
-                                userId={userId}
+                                userId={userIdRanking}
                             />
                         ) : (
                             <RankingList
@@ -204,7 +210,7 @@ const Ranking: React.FC = () => {
                                 userId={displayCurrentCommunityId}
                             />
                         )}
-                        {/* 自分が何位化を取得する もし自分の順位が決まっていなかったら登録されていませんになる */}
+                        {/* 自分が何位かを取得する もし自分の順位が決まっていなかったら登録されていませんになる */}
                         {view === "user" ? (
                             <UserRank
                                 name={
