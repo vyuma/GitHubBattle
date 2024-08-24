@@ -30,7 +30,7 @@ const isBattleStarted = (startDate: string) => {
 const CommunityDetailPage = () => {
     const [session, setSession] = useState<Session | null>(null);
     const [display, setDisplay] = useState<CommunityType[]>([]);
-    const [nickname, setNickname] = useState<string>("匿名ユーザー");
+    const [nickname, setNickname] = useState<string>("");
     const [community_members, setCommunityMembers] = useState<
         UsersCommunityType[]
     >([]);
@@ -39,7 +39,7 @@ const CommunityDetailPage = () => {
     const params = useParams();
     const communityId: string = params.id as string;
     const router = useRouter();
-    const isTemp:Boolean=true;
+    const isTemp:Boolean=false;
 
     useEffect(() => {
         if (initializationDone.current) return;
@@ -68,6 +68,11 @@ const CommunityDetailPage = () => {
     const memberCount = 2;//現在のメンバー数
 
     const handleJoinCommunity = async () => {
+        if (nickname.length < 2) {
+            alert("ニックネームは2文字以上で入力してください");
+            return;
+        }
+
         const isSucess = await addUserCommunity(
             communityId,
             nickname,
@@ -150,20 +155,13 @@ const CommunityDetailPage = () => {
                             </div>
                             {!isTemp && (
                                 <div className="mb-4">
-                                    <label
-                                        htmlFor="nickname"
-                                        className="block text-sm font-medium text-gray-700 mb-2"
-                                    >
-                                        ニックネーム
-                                    </label>
                                     <input
                                         type="text"
                                         id="nickname"
-                                        onChange={(e) =>
-                                            setNickname(e.target.value)
-                                        }
+                                        onChange={(e) => setNickname(e.target.value)}
                                         placeholder="ニックネームを入力"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        required
                                     />
                                 </div>
                             )}
