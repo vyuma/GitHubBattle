@@ -8,6 +8,7 @@ import { toast, Toaster } from "react-hot-toast";
 import { getUserSession } from "@/service/supabase/auth/getUserSession";
 import Navbar from "@/components/Navbar";
 import { Session } from "@supabase/supabase-js";
+import BottomNavbar from "@/components/BottomNavbar";
 
 const CreateCommunity = () => {
     const [communityName, setCommunityName] = useState<string>("");
@@ -158,6 +159,8 @@ const CreateCommunity = () => {
                     </Link>
                 </div>
             </div>
+
+            <BottomNavbar />
         </>
     );
 };
