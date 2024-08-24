@@ -6,6 +6,7 @@ import { getUserSession } from '@/service/supabase/auth/getUserSession';
 import { getCommunity } from '@/service/supabase/get/getCommunity';
 import { addUserCommunity } from '@/service/supabase/updates/addUserCommunity';
 import { getCommunityMembers } from '@/service/supabase/get/getCommunityMembers';
+import { getUserContribution } from '@/service/supabase/get/getUserContribution';
 
 export default function Test() {
     const [session, setSession] = useState<Session | null>(null);
@@ -27,6 +28,7 @@ export default function Test() {
             if (communityMember.length < community[0].member_limits) {
                 //addUserCommunity(community[0].community_id, "hello"); //引数　入るコミュニティID,　個人が特定されないニックネーム
             }
+
             console.log(communityMember);
         }
 
@@ -34,7 +36,19 @@ export default function Test() {
         initializeAuth();
     }, []);
 
+    useEffect(() => {
+        if (session) {
+            const fetchUserContribution = async () => {
+                const userContributionInfo = await getUserContribution(session.user.id);
+                console.log(userContributionInfo);
+            };
+
+            fetchUserContribution();
+        }
+    }, [session]);
+
     if (session) {
+
         return (
             <div>
                 <div>User Metadata: <pre>{JSON.stringify(session, null, 2)}</pre></div>
