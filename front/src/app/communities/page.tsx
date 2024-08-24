@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Session } from "@supabase/supabase-js";
 import { getUserSession } from "@/service/supabase/auth/getUserSession";
-import { getCommunity } from "@/service/supabase/get/getCommunity";
+import {  getCommunityAndCnt } from "@/service/supabase/get/getCommunity";
 import { CommunityType } from "@/constants/communityType";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -30,7 +30,7 @@ const CommunitiesPage: React.FC = () => {
 
     const fetchCommunities = async (page: number) => {
         const offset = (page - 1) * 20;
-        const { communities, total } = await getCommunity(offset);
+        const { communities, total } = await getCommunityAndCnt(offset);
         setDisplay(communities);
         setCurrentPage(page);
         setTotalPages(Math.ceil(total / 20));

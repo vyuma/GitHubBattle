@@ -34,12 +34,12 @@ const CommunityDetailPage = () => {
     const [community_members, setCommunityMembers] = useState<
         UsersCommunityType[]
     >([]);
-    const [isBattleAlreadyStarted, setIsBattleAlreadyStarted] =
-        useState<boolean>(false);
+
     const initializationDone = useRef(false);
     const params = useParams();
     const communityId: string = params.id as string;
     const router = useRouter();
+    const isTemp:Boolean=true;
 
     useEffect(() => {
         if (initializationDone.current) return;
@@ -58,25 +58,14 @@ const CommunityDetailPage = () => {
             setCommunityMembers(communityMembers);
 
             // バトル開始済みかどうかをチェック
-            const currentCommunity = community.find(
-                (c) => c.community_id === communityId
-            );
-            if (currentCommunity && currentCommunity.start_date) {
-                setIsBattleAlreadyStarted(
-                    isBattleStarted(currentCommunity.start_date.toString())
-                );
-            }
         };
 
         initializeAuth();
     }, [communityId]);
 
-    const currentCommunity = display.find(
-        (community) => community.community_id === communityId
-    );
-    const startDate = currentCommunity?.start_date.toString();
-    const memberLimits = currentCommunity?.member_limits;
-    const memberCount = community_members.length;
+    const startDate = "2024/08/10";
+    const memberLimits = 5;
+    const memberCount = 2;//現在のメンバー数
 
     const handleJoinCommunity = async () => {
         const isSucess = await addUserCommunity(
@@ -113,13 +102,13 @@ const CommunityDetailPage = () => {
             
             <div className="bg-gray-100 min-h-screen py-10 px-4">
                 <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-                    {currentCommunity ? (
+                    {true ? (
                         <div className="p-8">
                             <h1 className="text-3xl font-bold text-blue-700 mb-4">
-                                『{currentCommunity.name}』
+                                『{"currentCommunity.name"}』
                             </h1>
                             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                                {currentCommunity.detail}
+                                {"currentCommunity.detail"}
                             </p>
                             <div className="mb-6 bg-gray-50 p-4 rounded-md">
                                 {community_members.length === 0 && (
@@ -159,7 +148,7 @@ const CommunityDetailPage = () => {
                                     </span>
                                 </p>
                             </div>
-                            {!isBattleAlreadyStarted && (
+                            {!isTemp && (
                                 <div className="mb-4">
                                     <label
                                         htmlFor="nickname"
@@ -178,7 +167,7 @@ const CommunityDetailPage = () => {
                                     />
                                 </div>
                             )}
-                            {isBattleAlreadyStarted ? (
+                            {isTemp ? (
                                 <div className="mb-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
                                     <p className="font-bold">警告</p>
                                     <p>
