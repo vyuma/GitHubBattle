@@ -1,10 +1,10 @@
-import {Ranking} from '@/constants/rankings';
+import {RankingType} from '@/constants/rankings';
 import {userContributionType} from '@/constants/userContributionType';
-import { RankingItem } from '@/components/RankingItem';
+import RankingItem from "@/components/RankingItem"
 
 
 
-export default function RankingList(rankings:Ranking[],userId:string) {
+export default function RankingList(props:{rankings:RankingType[],userId:string}) {
 
 
     const isMe =(id:String,userId:String)=>{
@@ -17,12 +17,13 @@ export default function RankingList(rankings:Ranking[],userId:string) {
     return (
         <>
         <ol>
-            {rankings.map((ranking) => (
+            {props.rankings.map((ranking,index) => (
                     <RankingItem
-                        name={ranking.name}
-                        contribution={ranking.contribution}
-                        rank={ranking.rank}
-                        identify={isMe(ranking.id,userId)}
+                    name={ranking.name}
+                    contribution={ranking.contribution}
+                    // rank={ranking.rank}
+                    rank={index+1}
+                    identify={isMe(ranking.id,props.userId)}
                     />
             ))}
         </ol>
