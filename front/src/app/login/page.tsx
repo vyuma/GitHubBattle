@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { addUser } from "@/service/supabase/updates/addUser";
 
+
 const LoginPage: React.FC = () => {
     const [xName, setXName] = useState<string>("");
     const router = useRouter();
@@ -38,6 +39,16 @@ const LoginPage: React.FC = () => {
         await githubLogin();
     };
 
+    const handleLogout = async () =>{
+        const isSucess=await logout();
+        if(isSucess){
+            router.push("/login");
+        }
+        else{
+            alert("ログアウトに失敗しました");
+        }
+    }
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
             <div className="p-8 bg-white rounded-lg shadow-md">
@@ -58,7 +69,7 @@ const LoginPage: React.FC = () => {
                     GitHubでログイン
                 </button>
                 <button
-                    onClick={logout}
+                    onClick={handleLogout}
                     className="w-full px-4 py-2 text-gray-800 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 >
                     ログアウトテスト

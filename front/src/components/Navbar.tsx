@@ -1,11 +1,17 @@
 import { Session } from "@supabase/supabase-js";
 import { logout } from "@/service/supabase/auth/logout";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const Navbar: React.FC<{ session: Session | null }> = ({ session }) => {
+    const router = useRouter();
+    
     const handleLogout = async (e: React.MouseEvent) => {
         e.preventDefault();
-        await logout();
+        const isSucess=await logout();
+        if(isSucess){
+            router.push("/login");
+        }
     };
 
     return (

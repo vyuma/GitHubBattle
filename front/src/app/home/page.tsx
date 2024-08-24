@@ -16,7 +16,7 @@ import { getUserSession } from "@/service/supabase/auth/getUserSession";
 import { CommunityType } from "@/constants/communityType";
 import { UsersCommunityType } from "@/constants/usersCommunityType";
 import { getUsersCommunityRegistration } from "@/service/supabase/get/getUsersCommunityRegistration";
-import { getTopContributors } from "@/service/supabase/get/getTopContributors";
+import { getTopUserContributors } from "@/service/supabase/get/getTopUserContributors";
 
 type RankingItem = {
     id: string;
@@ -50,7 +50,7 @@ const Ranking: React.FC = () => {
                 const communityMembers = await getCommunityMembers(userReg.UsersCommunityType.community_id || "");
                 setCommunityMembers(communityMembers);
 
-                const topContributors = await getTopContributors();
+                const topContributors = await getTopUserContributors();
                 setTopContributors(topContributors.map(c => ({
                     id: c.user_id,
                     name: c.user_name,

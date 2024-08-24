@@ -1,7 +1,7 @@
 import { userContributionType } from "@/constants/userContributionType";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
-export const getTopContributors = async (): Promise<userContributionType[]> => {
+export const getTopUserContributors = async (): Promise<userContributionType[]> => {
     const supabase = createClientComponentClient()
 
     try {
