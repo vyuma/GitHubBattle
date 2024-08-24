@@ -97,7 +97,7 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
             }
         }
         fetchCommunity();
-    })
+    }, [params.id]);
 
     useEffect(()=> {
         const fetchNickname = async () => {
