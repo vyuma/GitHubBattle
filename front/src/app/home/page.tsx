@@ -85,6 +85,7 @@ const Ranking: React.FC = () => {
                 })));
 
                 const topCommunityContribute = await getTopCommunityContribution();
+                console.log(topCommunityContribute);
                 setTopCommunityContribution(topCommunityContribute);
                 
             }
