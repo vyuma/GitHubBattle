@@ -45,3 +45,24 @@ export const getCommunity = async (offset: number): Promise<CommunityType[]> => 
         return []
     }
 }
+
+export const getOneCommunity = async (communityId: number): Promise<CommunityType[]> => {
+    const supabase = createClientComponentClient()
+
+    try {
+        const { data, error } = await supabase
+            .from('communities')
+            .select('*')
+            .order('created_at', { ascending: false })  // 新しいデータから取得
+            .eq('id', communityId)
+
+        if (error) {
+            throw error
+        }
+
+        return (data as CommunityType[]).reverse();  // このreverseを消せば配列の順序を逆にできる
+    } catch (error) {
+        console.error('Error fetching initial data:', error)
+        return []
+    }
+}
