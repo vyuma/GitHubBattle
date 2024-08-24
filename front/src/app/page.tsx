@@ -24,7 +24,7 @@ const Home: NextPage = () => {
 
                     <div className="bg-white shadow-md rounded-lg p-8 mb-8 transition-all duration-300 hover:shadow-xl animate-fade-in">
                         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                            GitHub開発者のためのコミュニティ
+                            ITエンジニアのためのコミュニティ
                         </h2>
 
                         <p className="text-gray-600 mb-6 leading-relaxed">

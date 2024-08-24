@@ -84,6 +84,12 @@ const LoginPage: React.FC = () => {
                     >
                         ログアウトテスト
                     </button>
+                    <button
+                        onClick={handleAnonymousLogin}
+                        className="w-full px-4 py-2 text-gray-800 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                    >
+                        ゲストログイン
+                    </button>
                 </div>
             </div>
             
