@@ -1,25 +1,38 @@
-
-import {RankingItem} from '@/constants/rankingItem';  
+import {RankingType} from '@/constants/rankings';
 import {userContributionType} from '@/constants/userContributionType';
+import RankingItem from "@/components/RankingItem"
 
-export default function Ranking(displayRankings:RankingItem[],userRank:userContributionType) {
-    return (
-        {displayRankings.map((item, index) => (
-            <li
-                key={index}
-                className={`flex justify-between items-center p-3 rounded-lg ${
-                    item.name === (view === "user" ? userId : currentCommunity)
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-gray-50"
-                }`}
-            >
-                <span className="font-semibold">{`${item.rank}. ${item.name}`}</span>
-                <span className="text-sm text-gray-600">
-                    {item.commits}コントリビュート
-                </span>
-            </li>
-            ))
+
+
+export default function RankingList(props:{rankings:RankingType[],userId:string}) {
+
+
+    const isMe =(id:String,userId:String)=>{
+        if(id===userId){
+            return true
+        }else{
+            return false
         }
+    }
+    return (
+        <>
+        <ol>
+            {props.rankings.map((ranking,index) => (
+                    <RankingItem
+                    name={ranking.name}
+                    contribution={ranking.contribution}
+                    // rank={ranking.rank}
+                    rank={index+1}
+                    identify={isMe(ranking.id,props.userId)}
+                    key={ranking.id}
+                    />
+            ))}
+        </ol>
+        </>
     )
 
+
 }
+
+
+

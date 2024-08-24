@@ -14,6 +14,7 @@ import Link from "next/link";
 import { addUserCommunity } from "@/service/supabase/updates/addUserCommunity";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
+import { getOnlyCommunity } from "@/service/supabase/get/getOnlyCommunity";
 
 // 現在の日時を取得する関数
 const getCurrentDate = () => {
@@ -29,8 +30,8 @@ const isBattleStarted = (startDate: string) => {
 
 const CommunityDetailPage = () => {
     const [session, setSession] = useState<Session | null>(null);
-    const [display, setDisplay] = useState<CommunityType[]>([]);
     const [nickname, setNickname] = useState<string>("");
+    const [communityInfo,setCommunityInfo]= useState<CommunityType>();
     const [community_members, setCommunityMembers] = useState<
         UsersCommunityType[]
     >([]);
@@ -49,9 +50,6 @@ const CommunityDetailPage = () => {
             const initialSession = await getUserSession();
             setSession(initialSession);
 
-            const community = await getCommunity(0);
-            setDisplay(community);
-
             const communityMembers = await getCommunityMembers(
                 communityId?.toString()
             );
@@ -62,6 +60,18 @@ const CommunityDetailPage = () => {
 
         initializeAuth();
     }, [communityId]);
+
+    useEffect(()=>{
+        const fetchCommunity =async ()=>{
+            const onlyCommunity= await getOnlyCommunity(communityId!);
+            if(onlyCommunity){
+                setCommunityInfo(onlyCommunity);
+            }else{
+                alert("属しているコミュニティの情報が取得できません")
+            }
+        }
+        fetchCommunity();
+    })
 
     const startDate = "2024/08/10";
     const memberLimits = 5;
@@ -110,10 +120,10 @@ const CommunityDetailPage = () => {
                     {true ? (
                         <div className="p-8">
                             <h1 className="text-3xl font-bold text-blue-700 mb-4">
-                                『{"currentCommunity.name"}』
+                                『{communityInfo?.name}』
                             </h1>
                             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                                {"currentCommunity.detail"}
+                                {communityInfo?.detail}
                             </p>
                             <div className="mb-6 bg-gray-50 p-4 rounded-md">
                                 {community_members.length === 0 && (
