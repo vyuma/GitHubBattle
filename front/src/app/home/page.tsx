@@ -32,6 +32,7 @@ import {getTopCommunityContribution} from "@/service/supabase/get/getTopCommunit
 import RankingList from '@/components/Ranking';
 import {RankingType} from '@/constants/rankings'
 import UserRank from '@/components/RankingItem'
+import { deleteUserCommunity } from "@/service/supabase/delete/deleteUserCommunity";
 
 const Ranking: React.FC = () => {
     const [view, setView] = useState<"user" | "community">("user");
@@ -139,6 +140,10 @@ const Ranking: React.FC = () => {
     const allUserRank :RankingType[] = ContributersRanking as RankingType[];
     const allCommunityRank :RankingType[] = CommunityRanking as RankingType[];
 
+    const handleCommunityDropOut = async ()=>{
+                        //const temp= await deleteUserCommunity(session.user.id);
+                //console.log(temp);
+    }
 
     // 自分の順位を取得する
     

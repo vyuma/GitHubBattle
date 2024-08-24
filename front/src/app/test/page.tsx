@@ -10,6 +10,7 @@ import { getUserContribution } from '@/service/supabase/get/getUserContribution'
 import { getCommunityContribution } from '@/service/supabase/get/getCommunityContribution';
 import { getTopUserContributors } from '@/service/supabase/get/getTopUserContributors';
 import { getTopCommunityContribution } from '@/service/supabase/get/getTopCommunityContribution';
+import { deleteUserCommunity } from '@/service/supabase/delete/deleteUserCommunity';
 
 export default function Test() {
     const [session, setSession] = useState<Session | null>(null);
@@ -36,6 +37,8 @@ export default function Test() {
                 //addUserCommunity(community[0].community_id, "hello"); //引数　入るコミュニティID,　個人が特定されないニックネーム
             }
 
+
+
             console.log(communityMember);
         }
 
@@ -47,6 +50,8 @@ export default function Test() {
             const fetchUserContribution = async () => {
                 const userContributionInfo = await getUserContribution(session.user.id);
                 console.log(userContributionInfo);
+                const temp= await deleteUserCommunity(session.user.id);
+                console.log(temp);
             };
 
             fetchUserContribution();

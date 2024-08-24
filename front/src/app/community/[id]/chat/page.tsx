@@ -272,13 +272,17 @@ const CommunityChat = ({ params }: { params: { id: string } }) => {
                     {"communityDetail"}
                 </p>
                 <div>
-                    {/* ここはタイプのミスがでる */}
-                    <RankingItem
-                        name={communityRanking?.community_name}
-                        contribution={communityRanking?.total_contributions}
-                        rank={communityRanking?.rank}
-                        identify={true}
-                    />
+                    {communityRanking && (
+                        <div className="community-ranking-container">
+                            <h2>コミュニティランキング</h2>
+                            <RankingItem
+                                name={communityRanking.community_name}
+                                contribution={communityRanking.total_contributions}
+                                rank={communityRanking.rank}
+                                identify={true}
+                        />
+                        </div>
+                    )}
                 </div>
 
                 <div
