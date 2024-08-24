@@ -133,6 +133,9 @@ const Ranking: React.FC = () => {
                                 className={`flex justify-between items-center p-3 rounded-lg `}
                             >
                               <span className="font-semibold">{userRanking ?`${userRanking?.rank}. ${userRanking?.user_name}`:'あなたはランキング対象外です'}</span>
+                              <span className="text-sm text-gray-600">
+                                    {userRanking?.total_contributions}コントリビュート
+                                </span>
 
                             </li>
                     </ol>
