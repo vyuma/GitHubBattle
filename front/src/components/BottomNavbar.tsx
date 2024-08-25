@@ -4,7 +4,7 @@ import Link from "next/link";
 const BottomNavbar = () => {
     const currentYear = new Date().getFullYear();
     return (
-        <div className="bg-white shadow-inner py-4 w-full">
+        <div className=" bg-white shadow-inner py-4 w-full">
             <div className="px-4">
                 <div className="flex flex-col items-center space-y-2">
                     <Link

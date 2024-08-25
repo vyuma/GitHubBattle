@@ -350,9 +350,10 @@ const Ranking: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                <BottomNavbar />
             </div>
 
-            <BottomNavbar />
+            
         </>
     );
 };
