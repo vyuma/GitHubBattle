@@ -3,3 +3,11 @@ uvicorn
 PyGithub
 numpy
 pandas
+
+scikit-learn
+matplotlib
+seaborn
+torch
+torchvision
+transformers
+
