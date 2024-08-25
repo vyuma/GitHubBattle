@@ -171,6 +171,7 @@ const Ranking: React.FC = () => {
 
     return (
         <>
+        <div className="md:flex-col">
             <div className="flex flex-col md:flex-row h-screen bg-gray-100">
                 {/* 左側: ランキング */}
                 {/* ユーザーとコミュニティの問題 */}
@@ -319,6 +320,7 @@ const Ranking: React.FC = () => {
                         アクション
                     </h2>
 
+                    <div className="flex-col">
                     <Link
                         href="/community-create"
                         className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-all duration-300 text-center flex items-center justify-center space-x-2 shadow-md hover:shadow-lg transform hover:-translate-y-1"
@@ -334,6 +336,7 @@ const Ranking: React.FC = () => {
                         <FaSearch className="text-xl" />
                         <span className="font-medium">コミュニティを探す</span>
                     </Link>
+                    </div>
 
                     <div className="mt-8 text-center">
                         <p className="text-gray-600 text-sm mb-2">
@@ -350,10 +353,10 @@ const Ranking: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                <BottomNavbar />
+                
             </div>
-
-            
+            <BottomNavbar />
+        </div>
         </>
     );
 };
