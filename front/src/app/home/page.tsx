@@ -36,6 +36,7 @@ import { Session } from "inspector";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import BottomNavbar from "@/components/BottomNavbar";
 
+
 const Ranking: React.FC = () => {
     const [view, setView] = useState<"user" | "community">("user");
     const [userId, setUserId] = useState<string>("");
