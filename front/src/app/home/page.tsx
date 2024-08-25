@@ -256,6 +256,27 @@ const Ranking: React.FC = () => {
                             所属コミュニティ: {communityInfo?.name}
                         </h2>
 
+                        {
+                           userCommunityRanking ? (
+                            // コミュニティが連続記録を更新している場合
+                            <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4">
+                                {/* 更新している場合 */}
+                                <p className="font-bold">
+                                    このコミュニティは連続でコミットをしています！継続していきましょう！
+                                </p>
+                            </div>
+                        ) : (
+                            // コミュニティが連続記録を更新していない場合
+                            <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+                                {/* 更新していない場合 */}
+                                <p className="font-bold">
+                                    このコミュニティは連続でコミットをしていません。一緒に頑張りましょう！
+                                </p>
+                            </div>
+                        )
+
+                        }
+
                         <h3 className="text-lg font-medium text-gray-700 mb-2">
                             メンバー
                         </h3>
