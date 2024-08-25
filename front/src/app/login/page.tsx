@@ -6,7 +6,6 @@ import { logout } from "@/service/supabase/auth/logout";
 import { useRouter } from "next/navigation";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { addUser } from "@/service/supabase/updates/addUser";
-import { anonymousLogin } from "@/service/supabase/auth/anonymousLogin";
 import BottomNavbar from "@/components/BottomNavbar";
 
 const LoginPage: React.FC = () => {
@@ -49,14 +48,6 @@ const LoginPage: React.FC = () => {
         }
     }
 
-    const handleAnonymousLogin =async () =>{
-        console.log("ok");
-        const isSuccess=await  anonymousLogin();
-        if(isSuccess){
-            router.push("/home");
-        }
-        console.log(isSuccess);
-    }
 
     return (
         <>
@@ -83,12 +74,6 @@ const LoginPage: React.FC = () => {
                         className="w-full px-4 py-2 text-gray-800 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
                     >
                         ログアウトテスト
-                    </button>
-                    <button
-                        onClick={handleAnonymousLogin}
-                        className="w-full px-4 py-2 text-gray-800 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                    >
-                        ゲストログイン
                     </button>
                 </div>
             </div>
