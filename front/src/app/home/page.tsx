@@ -270,7 +270,7 @@ const Ranking: React.FC = () => {
                             <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
                                 {/* 更新していない場合 */}
                                 <p className="font-bold">
-                                    このコミュニティは連続でコミットをしていません。一緒に頑張りましょう！
+                                    このコミュニティは連続でコミットをしていません。VSCodeを開いてコミットしましょう！
                                 </p>
                             </div>
                         )
