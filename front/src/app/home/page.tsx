@@ -220,7 +220,7 @@ const Ranking: React.FC = () => {
                                 contribution={
                                     userRanking?.total_contributions || 0
                                 }
-                                rank={userRanking?.rank || "圏外"}
+                                rank={userRanking?.rank||0}
                                 identify={true}
                             />
                         ) : (
@@ -233,7 +233,7 @@ const Ranking: React.FC = () => {
                                     userCommunityRanking?.total_contributions ||
                                     0
                                 }
-                                rank={userCommunityRanking?.rank || "圏外"}
+                                rank={userCommunityRanking?.rank||0}
                                 identify={true}
                             />
                         )}
